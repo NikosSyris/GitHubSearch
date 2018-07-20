@@ -24,21 +24,24 @@ namespace GitHub_Tool
 
             Search search = new Search();
             Commit commit = new Commit();
+            Download download = new Download();
 
             //search.SearchRepositories();
             var file = search.SearchCode(term : "var result = await client.Search.SearchCode(request);");
+            //todo When the type of a variable is not clear from the context, use an explicit type.
+            
             //search.searchUsers();
 
 
             //Think of the Task<SearchCode> return type as a 'promise' to return a value in the future.
             //to get the value of the parameter use: parameter.result
-            commit.getAllCommitsThatChangedAFile(file.Result); 
-           // commit.getAllCommits();
-           // commit.downloadCommits();
+            var fileInformation = commit.getAllCommitsThatChangedAFile(file.Result);
+            // commit.getAllCommits();
+            // commit.downloadCommits();
 
 
 
-            //TryToDownload();
+            download.downloadContent(fileInformation.Result);
 
 
             //GetUserInfo();
@@ -89,47 +92,7 @@ namespace GitHub_Tool
 
 
 
-        // download the contents of a file form whichever commit or branch you want
-        public async static void TryToDownload()
-        {
-
-            var client = GithubApi.createGithubClient();
-
-            var docs = await client
-                .Repository
-                .Content
-                .GetAllContents("octokit", "octokit.net", "docs/getting-started.md");
-
-
-            //var docs = await client
-            //    .Repository
-            //    .Content
-            //     .GetAllContentsByRef("octokit", "octokit.net", "docs/getting-started.md", "438a32639759b6af9a8fd2427099a718c858b3a6");
-
-
-
-            Console.WriteLine(docs.Count);  //= 1
-
-
-            //Console.WriteLine(docs.Count);
-
-            foreach (var element in docs)
-            {
-
-                Console.WriteLine(element.ToString());
-                Console.WriteLine(element.HtmlUrl);
-                Console.WriteLine(element.Size);
-                Console.WriteLine(element.Type);
-                Console.WriteLine(element.Content);
-            }
-
-
-
-            Console.WriteLine("done");
-
-
-
-        }
+        
 
 
         public async static Task GetUserInfo()

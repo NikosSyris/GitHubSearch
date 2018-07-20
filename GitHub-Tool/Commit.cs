@@ -12,34 +12,26 @@ namespace GitHub_Tool {
     class Commit
     {
 
-        public async void getAllCommitsThatChangedAFile(SearchCode file)  
+        public async Task<FileInformation> getAllCommitsThatChangedAFile(SearchCode file)  
         {
 
             var client = GithubApi.createGithubClient();
 
-
-            Console.WriteLine("getAllCommitsThatChangedAFile class");
-
-
             var repo = file.Repository.Name;
-
             Console.WriteLine(repo);
 
-            var username = file.Repository.Owner.Login;
+            var owner = file.Repository.Owner.Login;
+            Console.WriteLine(owner);
 
-            Console.WriteLine(username);
+            var filePath = file.Path;
 
-            //string username = "octokit";
-            //string repo = "octokit.net";
-
-            Console.WriteLine(file.Url);
 
 
             //Only commits containing this file path will be returned.
-            var request = new CommitRequest { Path = file.Path };
+            var request = new CommitRequest { Path = filePath };
 
             //for some reason the i think the request does not contain the actual commits. They are returned by the getAll.
-            var commitsForFile = await client.Repository.Commit.GetAll(username, repo, request);
+            var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, request);
 
 
             Console.WriteLine(commitsForFile.Count);
@@ -50,6 +42,10 @@ namespace GitHub_Tool {
                 //Console.WriteLine(commit.Author.Url);       // returns url of the author
                 //Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
             }
+
+            Console.WriteLine("download");
+
+            return new FileInformation(owner, repo, filePath, commitsForFile);
         }
 
 
@@ -59,11 +55,11 @@ namespace GitHub_Tool {
 
             var client = GithubApi.createGithubClient();
 
-            string username = "octokit";
+            string owner = "octokit";
             string repo = "octokit.net";
 
 
-            var repository = await client.Repository.Get(username, repo);
+            var repository = await client.Repository.Get(owner, repo);
             var commits = await client.Repository.Commit.GetAll(repository.Id);
 
 
@@ -79,18 +75,20 @@ namespace GitHub_Tool {
         }
 
 
+        
+        
         // Getting the number of commits for every file 
         public async void downloadCommits()
         {
 
             var client = GithubApi.createGithubClient();
 
-            string username = "octokit";
+            string owner = "octokit";
             string repo = "octokit.net";
 
 
 
-            var files = await client.Git.Tree.GetRecursive(username, repo, "master");
+            var files = await client.Git.Tree.GetRecursive(owner, repo, "master");
             var filePaths = files.Tree.Select(x => x.Path);
             var stats = new Dictionary<string, int>();
             foreach (var path in filePaths)
@@ -99,7 +97,7 @@ namespace GitHub_Tool {
                 var request = new CommitRequest { Path = path };
 
                 // for some reason  i think the request does not contain the actual commits. They are returned by the getAll.
-                var commitsForFile = await client.Repository.Commit.GetAll(username, repo, request);
+                var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, request);
 
                 stats.Add(path, commitsForFile.Count);
                 Console.WriteLine(path);

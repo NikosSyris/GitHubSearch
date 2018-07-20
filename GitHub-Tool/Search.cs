@@ -43,26 +43,18 @@ namespace GitHub_Tool
             var result = await client.Search.SearchCode(request);
 
             Console.WriteLine(result.TotalCount);
-
-            //Console.WriteLine(result.TotalCount);
-             Console.WriteLine(result.Items.ElementAt(resultPicked).HtmlUrl);
+            //Console.WriteLine(result.Items.ElementAt(resultPicked).HtmlUrl);
             // Console.WriteLine(result.Items.ElementAt(resultPicked).Path);
             // Console.WriteLine(result.Items.ElementAt(resultPicked).Url);
 
             var repo = result.Items.ElementAt(resultPicked).Repository;
-            Console.WriteLine(repo.Name);
-            Console.WriteLine(repo.FullName);
-
-            var username = repo.Owner;
-            Console.WriteLine(username.Url);
-
+            var owner = repo.Owner;
             var fileName = result.Items.ElementAt(resultPicked).Name;
-            Console.WriteLine(fileName);
-
 
             return result.Items.ElementAt(resultPicked);
 
         }
+
 
 
 
