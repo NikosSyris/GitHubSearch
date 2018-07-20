@@ -12,21 +12,31 @@ namespace GitHub_Tool {
     class Commit
     {
 
-        public async void getAllCommitsThatChangedAFile()  //SearchCode file
+        public async void getAllCommitsThatChangedAFile(SearchCode file)  
         {
 
             var client = GithubApi.createGithubClient();
 
 
+            Console.WriteLine("getAllCommitsThatChangedAFile class");
 
 
-            string username = "octokit";
-            string repo = "octokit.net";
+            var repo = file.Repository.Name;
 
+            Console.WriteLine(repo);
+
+            var username = file.Repository.Owner.Login;
+
+            Console.WriteLine(username);
+
+            //string username = "octokit";
+            //string repo = "octokit.net";
+
+            Console.WriteLine(file.Url);
 
 
             //Only commits containing this file path will be returned.
-            var request = new CommitRequest { Path = "Octokit.Reactive/Clients/IObservableIssueCommentsClient.cs" };
+            var request = new CommitRequest { Path = file.Path };
 
             //for some reason the i think the request does not contain the actual commits. They are returned by the getAll.
             var commitsForFile = await client.Repository.Commit.GetAll(username, repo, request);
@@ -37,8 +47,8 @@ namespace GitHub_Tool {
             foreach (GitHubCommit commit in commitsForFile)
             {
                 Console.WriteLine(commit.Sha);          //returns sha        60e9733c91f8923ada9c04d8a7acd3b66ad515c8
-                Console.WriteLine(commit.Author.Url);       // returns url of the author
-                Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
+                //Console.WriteLine(commit.Author.Url);       // returns url of the author
+                //Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
             }
         }
 

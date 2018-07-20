@@ -14,21 +14,27 @@ namespace GitHub_Tool
     public class GithubApi
     {
 
+        static String acceessToken;
 
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
+            acceessToken = args[0];
+
             Search search = new Search();
             Commit commit = new Commit();
 
-            search.SearchRepositories();
-           // var file = search.SearchCode();  s auto eixa meinei
+            //search.SearchRepositories();
+            var file = search.SearchCode(term : "var result = await client.Search.SearchCode(request);");
             //search.searchUsers();
 
-            commit.getAllCommitsThatChangedAFile();
-            commit.getAllCommits();
-            commit.downloadCommits();
+
+            //Think of the Task<SearchCode> return type as a 'promise' to return a value in the future.
+            //to get the value of the parameter use: parameter.result
+            commit.getAllCommitsThatChangedAFile(file.Result); 
+           // commit.getAllCommits();
+           // commit.downloadCommits();
 
 
 
@@ -54,7 +60,7 @@ namespace GitHub_Tool
         {
 
             var client = new GitHubClient(new ProductHeaderValue("my-cool-app"));
-            var tokenAuth = new Credentials("eb38e6af9ba503684c2fd7e000b09035d6f15c83");
+            var tokenAuth = new Credentials(acceessToken);
 
             client.Credentials = tokenAuth;
 

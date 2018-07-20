@@ -15,41 +15,52 @@ namespace GitHub_Tool
 
 
 
-        public async Task<SearchCode> SearchCode() // and return the first result 
+        public async Task<SearchCode> SearchCode(String term) // and return the first result 
         {
 
             var client = GithubApi.createGithubClient();
 
-            var request = new SearchCodeRequest("SELECT")
+
+            // 100 results per page as default
+            //request.PerPage = 30;
+
+            // set this when you want to fetch subsequent pages
+            //request.Page = 2;
+            
+
+            int resultPicked = 0;
+
+
+            var request = new SearchCodeRequest(term, "NikosSyris", "GitHub-Tool")
             {
 
                 // we may want to restrict the file based on file extension
-                Extension = "sql",
-
-
+                Extension = "cs",
 
             };
 
+
             var result = await client.Search.SearchCode(request);
 
+            Console.WriteLine(result.TotalCount);
 
             //Console.WriteLine(result.TotalCount);
-            // Console.WriteLine(result.Items.ElementAt(0).HtmlUrl);
-            // Console.WriteLine(result.Items.ElementAt(0).Path);
-            // Console.WriteLine(result.Items.ElementAt(0).Url);
+             Console.WriteLine(result.Items.ElementAt(resultPicked).HtmlUrl);
+            // Console.WriteLine(result.Items.ElementAt(resultPicked).Path);
+            // Console.WriteLine(result.Items.ElementAt(resultPicked).Url);
 
-            var repo = result.Items.ElementAt(0).Repository;
+            var repo = result.Items.ElementAt(resultPicked).Repository;
             Console.WriteLine(repo.Name);
             Console.WriteLine(repo.FullName);
 
             var username = repo.Owner;
             Console.WriteLine(username.Url);
 
-            var fileName = result.Items.ElementAt(0).Name;
+            var fileName = result.Items.ElementAt(resultPicked).Name;
             Console.WriteLine(fileName);
 
 
-            return result.Items.ElementAt(0);
+            return result.Items.ElementAt(resultPicked);
 
         }
 
