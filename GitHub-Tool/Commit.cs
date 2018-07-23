@@ -38,12 +38,12 @@ namespace GitHub_Tool {
 
             foreach (GitHubCommit commit in commitsForFile)
             {
-                Console.WriteLine(commit.Sha);          //returns sha        60e9733c91f8923ada9c04d8a7acd3b66ad515c8
+                //Console.WriteLine(commit.Sha);          //returns sha        60e9733c91f8923ada9c04d8a7acd3b66ad515c8
                 //Console.WriteLine(commit.Author.Url);       // returns url of the author
                 //Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
             }
 
-            Console.WriteLine("download");
+            Console.WriteLine("download method");
 
             return new FileInformation(owner, repo, filePath, commitsForFile);
         }

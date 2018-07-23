@@ -27,7 +27,7 @@ namespace GitHub_Tool
             Download download = new Download();
 
             //search.SearchRepositories();
-            var file = search.SearchCode(term : "var result = await client.Search.SearchCode(request);");
+            var file = search.SearchCode(term : " var apiInfo = client.GetLastApiInfo(); ");
             //todo When the type of a variable is not clear from the context, use an explicit type.
             
             //search.searchUsers();
@@ -42,6 +42,10 @@ namespace GitHub_Tool
 
 
             download.downloadContent(fileInformation.Result);
+            //download.createFolder("test1","test2.cs");
+
+
+
 
 
             //GetUserInfo();
@@ -50,6 +54,9 @@ namespace GitHub_Tool
 
             // var commitNumber = CountCommitsSimpleTest();
             // Console.WriteLine(commitNumber);
+
+
+
 
             // Keep the console window open in debug mode.
             Console.WriteLine("Press any key to exit.");
@@ -78,6 +85,25 @@ namespace GitHub_Tool
 
 
 
+        public static void printAPILimitInfo()   //for some reason it didn't work as a method bit works if i put the code in download
+        {
+
+            var client = GithubApi.createGithubClient();
+
+            // Prior to first API call, this will be null, because it only deals with the last call.
+            var apiInfo = client.GetLastApiInfo();
+
+            // If the ApiInfo isn't null, there will be a property called RateLimit
+            var rateLimit = apiInfo?.RateLimit;
+
+            var howManyRequestsCanIMakePerHour = rateLimit?.Limit;
+            var howManyRequestsDoIHaveLeft = rateLimit?.Remaining;
+            var whenDoesTheLimitReset = rateLimit?.Reset; // UTC time
+
+            Console.WriteLine(howManyRequestsCanIMakePerHour);
+            Console.WriteLine(howManyRequestsDoIHaveLeft);
+            Console.WriteLine(whenDoesTheLimitReset);
+        }
 
 
 
@@ -92,7 +118,8 @@ namespace GitHub_Tool
 
 
 
-        
+
+
 
 
         public async static Task GetUserInfo()

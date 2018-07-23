@@ -26,19 +26,22 @@ namespace GitHub_Tool
 
             // set this when you want to fetch subsequent pages
             //request.Page = 2;
-            
+
 
             int resultPicked = 0;
 
-
-            var request = new SearchCodeRequest(term, "NikosSyris", "GitHub-Tool")
+            // "GitHub-Tool"  "NikosSyris"           SEARCH ON A SPECIFIC USER OR REPO DOESN'T WORK
+            var request = new SearchCodeRequest(term)
             {
 
-                // we may want to restrict the file based on file extension
                 Extension = "cs",
 
-            };
+               // Repos = new RepositoryCollection { "n1k0/stpackages" }
 
+                
+
+            };
+            //request.Page = 2;
 
             var result = await client.Search.SearchCode(request);
 
@@ -46,6 +49,58 @@ namespace GitHub_Tool
             //Console.WriteLine(result.Items.ElementAt(resultPicked).HtmlUrl);
             // Console.WriteLine(result.Items.ElementAt(resultPicked).Path);
             // Console.WriteLine(result.Items.ElementAt(resultPicked).Url);
+
+
+
+            //finds the file with the most commits     
+
+            var commitsMax = 0;
+            var numberOfResults = result.TotalCount;
+            request.Page = 0;
+
+            while (true )    // API rate limmit exceeded stis 10.40. na valw prints gia na vlepw to progress
+            {
+                request.Page += 1;
+
+                for (var j = 0; j < 100; j++)       // doesn't work if result.TotalCount <100
+                {
+                    var temp = result.Items.ElementAt(j);
+                    var filePath = temp.Path;
+
+                    var repo1 = temp.Repository.Name;
+                    var owner1 = temp.Repository.Owner.Login;
+
+                    var request2 = new CommitRequest { Path = filePath };
+
+                    var commitsForFile = await client.Repository.Commit.GetAll(owner1, repo1, request2);
+
+                    if (commitsForFile.Count > commitsMax)
+                    {
+                        commitsMax = commitsForFile.Count;
+                        resultPicked = j;
+                    }
+                    numberOfResults--;
+                    Console.WriteLine(numberOfResults);
+
+                    if (numberOfResults == 0)
+                    {
+                        break;
+                    }
+
+                }
+
+                if (numberOfResults == 0)
+                {
+                    break;
+                }
+            }
+
+
+
+
+
+
+
 
             var repo = result.Items.ElementAt(resultPicked).Repository;
             var owner = repo.Owner;

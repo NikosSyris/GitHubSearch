@@ -23,35 +23,73 @@ namespace GitHub_Tool
             var owner = fileInformation.Owner;
             var repo =  fileInformation.Repo;
             var filePath = fileInformation.FilePath;
-            Console.WriteLine(owner);
-            Console.WriteLine(repo);
-            Console.WriteLine(filePath);
-
-
-            var file = await client
-                .Repository
-                .Content
-                .GetAllContents(owner, repo, "CodeHub/Services/SearchUtility.cs");
+            //    Console.WriteLine(owner);
+            //     Console.WriteLine(repo);
+            //    Console.WriteLine(filePath);
 
 
             //var file = await client
             //    .Repository
-            //    .Content
-            //    .GetAllContentsByRef(owner, repo, "docs/getting-started.md", "438a32639759b6af9a8fd2427099a718c858b3a6");
+            //   .Content
+            //   .GetAllContents(owner, repo, filePath);
 
 
 
-            Console.WriteLine(file.Count);  //= 1
 
 
-            //Console.WriteLine(file.Count);
-
-            foreach (var element in file)
+            for (var i = 0; i < fileInformation.AllCommits.Count; i++)
             {
-                Console.WriteLine(element.Content);
+
+                var file = await client
+                    .Repository
+                    .Content
+                    .GetAllContentsByRef(owner, repo, filePath, fileInformation.AllCommits[i].Sha);
+
+                Console.WriteLine(fileInformation.AllCommits[i].Sha);
+
+
+
+                //Console.WriteLine(file.Count);  //= 1
+
+
+                //Console.WriteLine(file.Count);
+
+                foreach (var element in file)
+                {
+                    //Console.WriteLine(element.HtmlUrl);
+                    //Console.WriteLine(element.Content);
+                    createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);  
+
+                }
             }
 
+            GithubApi.printAPILimitInfo();
             Console.WriteLine("done");
         }
+
+
+
+        public void createFolder(String folderName, String fileName, String path, String content)
+        {
+
+            string pathString = @"c:\GitHub-Tool";
+
+            pathString = System.IO.Path.Combine(pathString, folderName);
+            System.IO.Directory.CreateDirectory(pathString);
+
+            pathString = System.IO.Path.Combine(pathString, fileName);
+            //Console.WriteLine("Path to my file: {0}\n", pathString);
+
+
+            using (System.IO.StreamWriter streamWriter =  new System.IO.StreamWriter(pathString))
+            {
+                streamWriter.WriteLine(path + "     " + DateTime.Today.ToString("dd-MM-yyyy")  + " " +  DateTime.Now.ToString("h:mm:ss tt") + "\r\n");
+                streamWriter.Write(content);
+
+            }
+
+        }
+
+
     }
 }
