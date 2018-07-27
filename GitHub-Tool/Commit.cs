@@ -7,21 +7,22 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Octokit.Internal;
 
-namespace GitHub_Tool { 
+namespace GitHub_Tool
+{
 
     class Commit
     {
 
-        public async Task<FileInformation> getAllCommitsThatChangedAFile(SearchCode file)  
+        public async Task<FileInformation> getAllCommitsThatChangedAFile(SearchCode file)
         {
 
-            var client = GithubApi.createGithubClient();
+            var client = MainWindow.createGithubClient();
 
             var repo = file.Repository.Name;
-            Console.WriteLine(repo);
+
 
             var owner = file.Repository.Owner.Login;
-            Console.WriteLine(owner);
+
 
             var filePath = file.Path;
 
@@ -34,16 +35,14 @@ namespace GitHub_Tool {
             var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, request);
 
 
-            Console.WriteLine(commitsForFile.Count);
+            //Console.WriteLine(commitsForFile.Count);
 
-            foreach (GitHubCommit commit in commitsForFile)
-            {
-                //Console.WriteLine(commit.Sha);          //returns sha        60e9733c91f8923ada9c04d8a7acd3b66ad515c8
-                //Console.WriteLine(commit.Author.Url);       // returns url of the author
-                //Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
-            }
-
-            Console.WriteLine("download method");
+            //foreach (GitHubCommit commit in commitsForFile)
+            //{
+            //    Console.WriteLine(commit.Sha);          //returns sha        60e9733c91f8923ada9c04d8a7acd3b66ad515c8
+            //    Console.WriteLine(commit.Author.Url);       // returns url of the author
+            //    Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
+            //}
 
             return new FileInformation(owner, repo, filePath, commitsForFile);
         }
@@ -53,7 +52,7 @@ namespace GitHub_Tool {
         public async void getAllCommits()
         {
 
-            var client = GithubApi.createGithubClient();
+            var client = MainWindow.createGithubClient();
 
             string owner = "octokit";
             string repo = "octokit.net";
@@ -75,13 +74,13 @@ namespace GitHub_Tool {
         }
 
 
-        
-        
+
+
         // Getting the number of commits for every file 
         public async void downloadCommits()
         {
 
-            var client = GithubApi.createGithubClient();
+            var client = MainWindow.createGithubClient();
 
             string owner = "octokit";
             string repo = "octokit.net";

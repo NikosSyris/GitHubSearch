@@ -12,16 +12,16 @@ namespace GitHub_Tool
     class Download
     {
 
-       
-        
+
+
         // download the contents of a file form whichever commit or branch you want
         public async void downloadContent(FileInformation fileInformation)
         {
 
-            var client = GithubApi.createGithubClient();
+            var client = MainWindow.createGithubClient();
 
             var owner = fileInformation.Owner;
-            var repo =  fileInformation.Repo;
+            var repo = fileInformation.Repo;
             var filePath = fileInformation.FilePath;
             //    Console.WriteLine(owner);
             //     Console.WriteLine(repo);
@@ -31,7 +31,8 @@ namespace GitHub_Tool
             //var file = await client
             //    .Repository
             //   .Content
-            //   .GetAllContents(owner, repo, filePath);
+            //   .GetAllContents(owner, repo, filePath)
+            //    .ConfigureAwait(false);
 
 
 
@@ -43,9 +44,10 @@ namespace GitHub_Tool
                 var file = await client
                     .Repository
                     .Content
-                    .GetAllContentsByRef(owner, repo, filePath, fileInformation.AllCommits[i].Sha);
+                    .GetAllContentsByRef(owner, repo, filePath, fileInformation.AllCommits[i].Sha)
+                    .ConfigureAwait(false);
 
-                Console.WriteLine(fileInformation.AllCommits[i].Sha);
+                //Console.WriteLine(fileInformation.AllCommits[i].Sha);
 
 
 
@@ -58,17 +60,33 @@ namespace GitHub_Tool
                 {
                     //Console.WriteLine(element.HtmlUrl);
                     //Console.WriteLine(element.Content);
-                    createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);  
+                    createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);
 
                 }
             }
 
-            GithubApi.printAPILimitInfo();
-            Console.WriteLine("done");
+            // i should move this when i get how it works
+
+            // Prior to first API call, this will be null, because it only deals with the last call.
+            //var apiInfo = client.GetLastApiInfo();
+
+            // If the ApiInfo isn't null, there will be a property called RateLimit
+            //var rateLimit = apiInfo?.RateLimit;
+
+            //var howManyRequestsCanIMakePerHour = rateLimit?.Limit;
+            //var howManyRequestsDoIHaveLeft = rateLimit?.Remaining;
+            //var whenDoesTheLimitReset = rateLimit?.Reset; // UTC time
+
+            //Console.WriteLine(howManyRequestsCanIMakePerHour);
+            //Console.WriteLine(howManyRequestsDoIHaveLeft);
+            //Console.WriteLine(whenDoesTheLimitReset);
+
+
+            //Console.WriteLine("done");
         }
 
 
-
+        //TODO there's a bug when there's 2 files with the same name
         public void createFolder(String folderName, String fileName, String path, String content)
         {
 
@@ -81,9 +99,9 @@ namespace GitHub_Tool
             //Console.WriteLine("Path to my file: {0}\n", pathString);
 
 
-            using (System.IO.StreamWriter streamWriter =  new System.IO.StreamWriter(pathString))
+            using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(pathString))
             {
-                streamWriter.WriteLine(path + "     " + DateTime.Today.ToString("dd-MM-yyyy")  + " " +  DateTime.Now.ToString("h:mm:ss tt") + "\r\n");
+                streamWriter.WriteLine(path + "     " + DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("h:mm:ss tt") + "\r\n");
                 streamWriter.Write(content);
 
             }

@@ -15,10 +15,11 @@ namespace GitHub_Tool
 
 
 
-        public async Task<SearchCode> SearchCode(String term) // and return the first result 
+        public async Task<SearchCode> searchCode(String term) // and return the first result or the result with the most commits
         {
+            var client = MainWindow.createGithubClient();
 
-            var client = GithubApi.createGithubClient();
+
 
 
             // 100 results per page as default
@@ -28,7 +29,7 @@ namespace GitHub_Tool
             //request.Page = 2;
 
 
-            int resultPicked = 0;
+            int resultPicked = 41;
 
             // "GitHub-Tool"  "NikosSyris"           SEARCH ON A SPECIFIC USER OR REPO DOESN'T WORK
             var request = new SearchCodeRequest(term)
@@ -36,16 +37,18 @@ namespace GitHub_Tool
 
                 Extension = "cs",
 
-               // Repos = new RepositoryCollection { "n1k0/stpackages" }
+                // Repos = new RepositoryCollection { "n1k0/stpackages" }
 
-                
+
 
             };
             //request.Page = 2;
 
-            var result = await client.Search.SearchCode(request);
+            var result = await client.Search.SearchCode(request).ConfigureAwait(false);
 
-            Console.WriteLine(result.TotalCount);
+
+
+            //Console.WriteLine(result.TotalCount);
             //Console.WriteLine(result.Items.ElementAt(resultPicked).HtmlUrl);
             // Console.WriteLine(result.Items.ElementAt(resultPicked).Path);
             // Console.WriteLine(result.Items.ElementAt(resultPicked).Url);
@@ -54,50 +57,47 @@ namespace GitHub_Tool
 
             //finds the file with the most commits     
 
-            var commitsMax = 0;
-            var numberOfResults = result.TotalCount;
-            request.Page = 0;
+            //var commitsMax = 0;
+            //var numberOfResults = result.TotalCount;
+            //request.Page = 0;
 
-            while (true )    // API rate limmit exceeded stis 10.40. na valw prints gia na vlepw to progress
-            {
-                request.Page += 1;
+            //while (true)    // API rate limmit exceeded stis 10.40. na valw prints gia na vlepw to progress
+            //{
+            //    request.Page += 1;
 
-                for (var j = 0; j < 100; j++)       // doesn't work if result.TotalCount <100
-                {
-                    var temp = result.Items.ElementAt(j);
-                    var filePath = temp.Path;
+            //    for (var j = 0; j < 100; j++)       // doesn't work if result.TotalCount <100
+            //    {
+            //        var temp = result.Items.ElementAt(j);
+            //        var filePath = temp.Path;
 
-                    var repo1 = temp.Repository.Name;
-                    var owner1 = temp.Repository.Owner.Login;
+            //        var repo1 = temp.Repository.Name;
+            //        var owner1 = temp.Repository.Owner.Login;
 
-                    var request2 = new CommitRequest { Path = filePath };
+            //        var request2 = new CommitRequest { Path = filePath };
 
-                    var commitsForFile = await client.Repository.Commit.GetAll(owner1, repo1, request2);
+            //        var commitsForFile = await client.Repository.Commit.GetAll(owner1, repo1, request2);
 
-                    if (commitsForFile.Count > commitsMax)
-                    {
-                        commitsMax = commitsForFile.Count;
-                        resultPicked = j;
-                    }
-                    numberOfResults--;
-                    Console.WriteLine(numberOfResults);
+            //        if (commitsForFile.Count > commitsMax)
+            //        {
+            //            commitsMax = commitsForFile.Count;
+            //            resultPicked = j;
+            //        }
+            //        numberOfResults--;
+            //        Console.WriteLine(numberOfResults);
 
-                    if (numberOfResults == 0)
-                    {
-                        break;
-                    }
+            //        if (numberOfResults == 0)
+            //        {
+            //            break;
+            //        }
 
-                }
+            //    }
 
-                if (numberOfResults == 0)
-                {
-                    break;
-                }
-            }
-
-
-
-
+            //    if (numberOfResults == 0)
+            //    {
+            //        break;
+            //    }
+            //}
+            // find the file with the most commits
 
 
 
@@ -117,7 +117,7 @@ namespace GitHub_Tool
         public async Task<Repository> SearchRepositories()
         {
 
-            var client = GithubApi.createGithubClient();
+            var client = MainWindow.createGithubClient();
 
             // Initialize a new instance of the SearchRepositoriesRequest class
             var request = new SearchRepositoriesRequest("javascript")   // language used
@@ -162,7 +162,7 @@ namespace GitHub_Tool
         public async void searchUsers()   //and find all their repos
         {
 
-            var client = GithubApi.createGithubClient();
+            var client = MainWindow.createGithubClient();
 
             var request = new SearchRepositoriesRequest()
             {
