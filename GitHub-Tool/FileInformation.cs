@@ -21,7 +21,7 @@ namespace GitHub_Tool
             Repo = repo;
             FilePath = filePath;
             AllCommits = allCommits;
-        }    
+        }
     }
 }
 

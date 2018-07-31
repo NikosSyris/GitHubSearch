@@ -11,196 +11,71 @@ namespace GitHub_Tool
 {
     class Search
     {
+        //.ConfigureAwait(false)
 
 
 
-
-        public async Task<SearchCode> searchCode(String term) // and return the first result or the result with the most commits
+        public async Task<IList<FileInformation>> SearchCode(String term, int minNumberOfCommits) 
         {
+
             var client = MainWindow.createGithubClient();
 
 
+            IList<FileInformation> files = new List<FileInformation>();
 
 
-            // 100 results per page as default
-            //request.PerPage = 30;
-
-            // set this when you want to fetch subsequent pages
-            //request.Page = 2;
-
-
-            int resultPicked = 41;
-
-            // "GitHub-Tool"  "NikosSyris"           SEARCH ON A SPECIFIC USER OR REPO DOESN'T WORK
-            var request = new SearchCodeRequest(term)
+            var codeRequest = new SearchCodeRequest(term)
             {
-
                 Extension = "cs",
-
-                // Repos = new RepositoryCollection { "n1k0/stpackages" }
-
-
-
-            };
-            //request.Page = 2;
-
-            var result = await client.Search.SearchCode(request).ConfigureAwait(false);
-
-
-
-            //Console.WriteLine(result.TotalCount);
-            //Console.WriteLine(result.Items.ElementAt(resultPicked).HtmlUrl);
-            // Console.WriteLine(result.Items.ElementAt(resultPicked).Path);
-            // Console.WriteLine(result.Items.ElementAt(resultPicked).Url);
-
-
-
-            //finds the file with the most commits     
-
-            //var commitsMax = 0;
-            //var numberOfResults = result.TotalCount;
-            //request.Page = 0;
-
-            //while (true)    // API rate limmit exceeded stis 10.40. na valw prints gia na vlepw to progress
-            //{
-            //    request.Page += 1;
-
-            //    for (var j = 0; j < 100; j++)       // doesn't work if result.TotalCount <100
-            //    {
-            //        var temp = result.Items.ElementAt(j);
-            //        var filePath = temp.Path;
-
-            //        var repo1 = temp.Repository.Name;
-            //        var owner1 = temp.Repository.Owner.Login;
-
-            //        var request2 = new CommitRequest { Path = filePath };
-
-            //        var commitsForFile = await client.Repository.Commit.GetAll(owner1, repo1, request2);
-
-            //        if (commitsForFile.Count > commitsMax)
-            //        {
-            //            commitsMax = commitsForFile.Count;
-            //            resultPicked = j;
-            //        }
-            //        numberOfResults--;
-            //        Console.WriteLine(numberOfResults);
-
-            //        if (numberOfResults == 0)
-            //        {
-            //            break;
-            //        }
-
-            //    }
-
-            //    if (numberOfResults == 0)
-            //    {
-            //        break;
-            //    }
-            //}
-            // find the file with the most commits
-
-
-
-
-            var repo = result.Items.ElementAt(resultPicked).Repository;
-            var owner = repo.Owner;
-            var fileName = result.Items.ElementAt(resultPicked).Name;
-
-            return result.Items.ElementAt(resultPicked);
-
-        }
-
-
-
-
-
-        public async Task<Repository> SearchRepositories()
-        {
-
-            var client = MainWindow.createGithubClient();
-
-            // Initialize a new instance of the SearchRepositoriesRequest class
-            var request = new SearchRepositoriesRequest("javascript")   // language used
-            {
-
-                // lets find a library with over 1k stars
-                Stars = Range.GreaterThan(1000),
-
-                // sort by the number of stars
-                SortField = RepoSearchSort.Stars,
             };
 
-
-            var repos = await client.Search.SearchRepo(request);
-
-
-            Console.WriteLine(repos.TotalCount);
-
-            Console.WriteLine(repos.Items.ElementAt(0).FullName);
-            Console.WriteLine(repos.Items.ElementAt(0).HtmlUrl);
-            Console.WriteLine(repos.Items.ElementAt(0).Language);
-            Console.WriteLine(repos.Items.ElementAt(0).Size);
-            Console.WriteLine(repos.Items.ElementAt(0).ForksCount);
-
-            //  foreach (var element in repos.Items) {
-
-            //      Console.WriteLine(element);
-            //}
+            var result = await client.Search.SearchCode(codeRequest).ConfigureAwait(false);
 
 
-            return repos.Items.ElementAt(0);
+            var numberOfResults = result.TotalCount;
+            codeRequest.Page = 0;
 
-
-        }
-
-
-
-
-
-
-        //  Ctrl + k + c to comment ctrl+k+u  to undo
-        public async void searchUsers()   //and find all their repos
-        {
-
-            var client = MainWindow.createGithubClient();
-
-            var request = new SearchRepositoriesRequest()
+            while (true)
             {
+                codeRequest.Page += 1;
 
+                for (var j = 0; j < 100; j++)       // na valw .perPage instead of 100
+                {
+                    var temp = result.Items.ElementAt(j);
+                    var filePath = temp.Path;
 
-                User = "sfikas"
+                    var repo = temp.Repository.Name;
+                    var owner = temp.Repository.Owner.Login;
 
-            };
+                    var commitRequest = new CommitRequest { Path = filePath };
 
+                    var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false);
 
-            var repos = await client.Search.SearchRepo(request);
+                    if (commitsForFile.Count > minNumberOfCommits)    // TODO also put equals
+                    {
+                        files.Add(new FileInformation(owner, repo, filePath, commitsForFile));
+                    }
+                    numberOfResults--;
 
-            var numberOfRepos = repos.TotalCount;
+                    if (numberOfResults == 0)
+                    {
+                        break;
+                    }
 
+                }
 
-            Console.WriteLine(numberOfRepos);           //excludes forks
-
-            foreach (var element in repos.Items)
-            {
-
-                Console.WriteLine(element.FullName);
-                Console.WriteLine(element.HtmlUrl);
-                Console.WriteLine(element.Language);
-                Console.WriteLine(element.Size);
-                Console.WriteLine(element.ForksCount);
+                if (numberOfResults == 0)
+                {
+                    break;
+                }
             }
 
+            IList<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
 
 
+            return Sortedfiles;
 
         }
-
-
-
-
-
-
-
 
     }
 }

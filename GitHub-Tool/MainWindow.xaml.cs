@@ -7,34 +7,43 @@ using System.Windows;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Octokit;
-
-
-
-
+using System.Windows.Controls;
 
 
 namespace GitHub_Tool
 {
     public partial class MainWindow : Window
     {
-        static String accessToken;
-        Search search = new Search();
-        Commit commit = new Commit();
-        Download download = new Download();
+        public static String accessToken;
+        TabItem tabUserPage;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+
+
+        private void BtnUser1_Click(object sender, RoutedEventArgs e)
         {
-            accessToken = accessTokenTextBox.Text;
-            var file = await search.searchCode(term: " var apiInfo = client.GetLastApiInfo(); ");
-            var fileInformation =  await commit.getAllCommitsThatChangedAFile(file);
-            download.downloadContent(fileInformation);
-            testBlock.Text = "done baby";
+            MainTab.Items.Clear(); //Clear previous Items in the user controls which is my tabItems
+            var userControls = new UserControl1();
+            tabUserPage = new TabItem { Content = userControls };
+            MainTab.Items.Add(tabUserPage); // Add User Controls
+            MainTab.Items.Refresh();
         }
+
+
+        private void BtnUser2_Click(object sender, RoutedEventArgs e)
+        {
+            MainTab.Items.Clear(); //Clear previous Items in the user controls which is my tabItems
+            var userControls = new UserControl1();
+            tabUserPage = new TabItem { Content = userControls };
+            MainTab.Items.Add(tabUserPage); // Add User Controls
+            MainTab.Items.Refresh();
+        }
+
+
 
 
         public static GitHubClient createGithubClient()

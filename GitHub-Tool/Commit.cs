@@ -13,38 +13,21 @@ namespace GitHub_Tool
     class Commit
     {
 
-        public async Task<FileInformation> getAllCommitsThatChangedAFile(SearchCode file)
+        public  String getAllCommitsThatChangedAFile(IList<FileInformation> files)
         {
 
             var client = MainWindow.createGithubClient();
 
-            var repo = file.Repository.Name;
+            var s = " ";
 
 
-            var owner = file.Repository.Owner.Login;
+            foreach (var file in files)
+            {
+                //Console.WriteLine(file.Owner + "  " + file.Repo + "  " + file.FilePath + "  " + file.AllCommits.Count);
+                s += file.Owner + "  " + file.Repo + "  " + file.FilePath + "  " + file.AllCommits.Count + "\r\n";
+            }
 
-
-            var filePath = file.Path;
-
-
-
-            //Only commits containing this file path will be returned.
-            var request = new CommitRequest { Path = filePath };
-
-            //for some reason the i think the request does not contain the actual commits. They are returned by the getAll.
-            var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, request);
-
-
-            //Console.WriteLine(commitsForFile.Count);
-
-            //foreach (GitHubCommit commit in commitsForFile)
-            //{
-            //    Console.WriteLine(commit.Sha);          //returns sha        60e9733c91f8923ada9c04d8a7acd3b66ad515c8
-            //    Console.WriteLine(commit.Author.Url);       // returns url of the author
-            //    Console.WriteLine(commit.Committer.Login);    // returns the name of the committer
-            //}
-
-            return new FileInformation(owner, repo, filePath, commitsForFile);
+            return s;
         }
 
 
