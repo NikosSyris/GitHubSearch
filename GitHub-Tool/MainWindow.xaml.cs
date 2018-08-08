@@ -40,6 +40,7 @@ namespace GitHub_Tool
             var userControls = new UserControl1();
             tabUserPage = new TabItem { Content = userControls };
             MainTab.Items.Add(tabUserPage); // Add User Controls
+            //MainTab.Items.Remove(BtnUser2);
             MainTab.Items.Refresh();
         }
 
@@ -57,6 +58,7 @@ namespace GitHub_Tool
             return client;
 
         }
+
 
 
     }

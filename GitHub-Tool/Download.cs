@@ -23,9 +23,7 @@ namespace GitHub_Tool
             var owner = fileInformation.Owner;
             var repo = fileInformation.Repo;
             var filePath = fileInformation.FilePath;
-            //    Console.WriteLine(owner);
-            //     Console.WriteLine(repo);
-            //    Console.WriteLine(filePath);
+
 
 
             //var file = await client
@@ -61,7 +59,8 @@ namespace GitHub_Tool
                     //Console.WriteLine(element.HtmlUrl);
                     //Console.WriteLine(element.Content);
                     createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);
-
+                    
+                    
                 }
             }
 

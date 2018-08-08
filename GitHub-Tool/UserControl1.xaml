@@ -9,11 +9,50 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="8402227cc3bb549746f34f75566f7e36135e9acc"/>
+            <TextBox Name="accessTokenTextBox" Text="594a78d0940de166f778d04560141a637cef2b05"/>
             <Button Content="Button" Click="Button_Click"/>
         </WrapPanel>
-        <TextBlock   x:Name="testBlock"  x:FieldModifier="public"  />
-        <TextBlock   x:Name="testBlock2"  x:FieldModifier="public"  />
+        <TextBox Name="term" Text="var client = MainWindow.createGithubClient()"/>
+        <TextBox Name="minNumberOfCommits" Text="1"/>
+        <TextBox Name="name" Text="NikosSyris"/>
+        <TextBox Name="size" Text=" "/>
+        
+        
+        
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
+              Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" >
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Owner" Binding="{Binding Owner}" Header="Owner" MinWidth="20" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="Repo" Binding="{Binding Repo}" Header="Repo." IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="FilePath" Binding="{Binding FilePath}" Header="FilePath" MinWidth="250" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="Size" Binding="{Binding Size}" Header="Size" MinWidth="250" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="NumberOfCommits" Binding="{Binding AllCommits.Count}" Header="NumberOfCommits" MinWidth="250" IsReadOnly="True"  />
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
+                    <DataGridCheckBoxColumn.Header>
+                        <CheckBox Name="chkSelectAll" Checked="chkSelectAll_Checked" Unchecked="chkSelectAll_Unchecked"></CheckBox>
+                    </DataGridCheckBoxColumn.Header>
+                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="ShowContentOnClick">Show content</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="ShowCommitsOnClick">Show commits</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <Button Content="Button" x:Name="button" Click="Button_Click2"/>
+        <TextBlock   x:Name="testBlock" Text=" "  x:FieldModifier="public"  />
+
+
     </StackPanel>
 </UserControl>
 

@@ -15,7 +15,7 @@ namespace GitHub_Tool
 
 
 
-        public async Task<IList<FileInformation>> SearchCode(String term, int minNumberOfCommits) 
+        public async Task<IList<FileInformation>> SearchCode(String term, int minNumberOfCommits, String name = null) 
         {
 
             var client = MainWindow.createGithubClient();
@@ -27,7 +27,27 @@ namespace GitHub_Tool
             var codeRequest = new SearchCodeRequest(term)
             {
                 Extension = "cs",
+
+                //User = "NikosSyris"
             };
+
+
+            if( name != null)
+            {
+                codeRequest.User = name;
+            }
+
+            //if (size != null)
+            //{
+            //    codeRequest.Size = Range.GreaterThanOrEquals(size.Value);
+            //}
+
+
+
+
+
+            //codeRequest.Size = Range.GreaterThan(500);
+            //NikosSyris/GitHub-Tool
 
             var result = await client.Search.SearchCode(codeRequest).ConfigureAwait(false);
 
@@ -43,14 +63,14 @@ namespace GitHub_Tool
                 {
                     var temp = result.Items.ElementAt(j);
                     var filePath = temp.Path;
-
+                    //var sizeTemp = temp.Repository.Size;  
                     var repo = temp.Repository.Name;
                     var owner = temp.Repository.Owner.Login;
 
                     var commitRequest = new CommitRequest { Path = filePath };
 
                     var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false);
-
+                    
                     if (commitsForFile.Count > minNumberOfCommits)    // TODO also put equals
                     {
                         files.Add(new FileInformation(owner, repo, filePath, commitsForFile));
@@ -70,6 +90,7 @@ namespace GitHub_Tool
                 }
             }
 
+            //IList<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
             IList<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
 
 

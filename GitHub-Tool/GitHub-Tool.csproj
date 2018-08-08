@@ -57,6 +57,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commit.cs" />
+    <Compile Include="CommitWindow.xaml.cs">
+      <DependentUpon>CommitWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContentWindow.xaml.cs">
+      <DependentUpon>ContentWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Download.cs" />
     <Compile Include="FileInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +89,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="CommitWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ContentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

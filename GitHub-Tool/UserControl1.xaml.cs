@@ -21,8 +21,6 @@ namespace GitHub_Tool
     public partial class UserControl1 : UserControl
     {
 
-
-        TabItem tabUserPage;
         Search search = new Search();
         Commit commit = new Commit();
         Download download = new Download();
@@ -38,12 +36,133 @@ namespace GitHub_Tool
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.accessToken = accessTokenTextBox.Text;
+            
 
-            var result = await search.SearchCode(term: " var apiInfo = client.GetLastApiInfo(); ", minNumberOfCommits: 15);
-            var s = commit.getAllCommitsThatChangedAFile(result);
-            testBlock2.Text = s;
+            var result = await search.SearchCode(term: term.Text, minNumberOfCommits: Int32.Parse(minNumberOfCommits.Text), name : name.Text);
+            //var s = commit.getAllCommitsThatChangedAFile(result);
+            //testBlock2.Text = s;
             // download.downloadContent(fileInformation);
-            testBlock.Text = "done baby";
+            dgCandidate.ItemsSource = result;
+        }
+
+
+
+
+
+        private  async void ShowContentOnClick(object sender, RoutedEventArgs e)
+        {
+            var client = MainWindow.createGithubClient();
+            ContentWindow w = new ContentWindow();
+
+
+            var x = (FileInformation)dgCandidate.CurrentCell.Item;   //dgCandidate.Items.CurrentItem;  showed only the first item
+            //var y = x.FilePath;
+
+            var file = await client
+                    .Repository
+                    .Content
+                    .GetAllContents(x.Owner, x.Repo, x.FilePath)
+                    .ConfigureAwait(false);
+
+
+
+            this.Dispatcher.Invoke(() =>
+            {
+                w.Show();
+
+                foreach (var element in file)
+                {
+                    w.fileContentTextBox.Text = element.Content;
+                }
+            });
+
+        }
+
+
+
+        private async void ShowCommitsOnClick(object sender, RoutedEventArgs e)
+        {
+            var client = MainWindow.createGithubClient();
+            CommitWindow w = new CommitWindow();
+
+
+            var x = (FileInformation)dgCandidate.CurrentCell.Item;
+
+            //this.Dispatcher.Invoke(() =>
+            //{
+            //    w.Show();
+
+            //    foreach (var commit in x.AllCommits)
+            //    {
+            //        w.fileCommitTextBox.Text += commit.Sha + "  " + commit.User.Login   +"\r\n";
+            //    }
+            //});
+
+
+
+            for (var i = 0; i < x.AllCommits.Count; i++)
+            {
+
+                var file = await client
+                    .Repository
+                    .Content
+                    .GetAllContentsByRef(x.Owner, x.Repo, x.FilePath, x.AllCommits[i].Sha)
+                    .ConfigureAwait(false);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                        w.Show();
+
+                        foreach (var element in file)
+                        {
+
+                            w.fileCommitTextBox.Text += element.Sha + "  " + element.Size + "   "  + "\r\n";
+                    
+
+                            //createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);
+
+                        }
+
+                });
+            }
+            
+
+            
+
+
+        }
+
+
+        private void chkSelectAll_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (FileInformation c in dgCandidate.ItemsSource)
+            {
+                c.IsSelected = true;
+            }
+        }
+
+        private void chkSelectAll_Unchecked(object sender, RoutedEventArgs e)
+        {
+            foreach (FileInformation c in dgCandidate.ItemsSource)
+            {
+                c.IsSelected = false;
+            }
+        }
+
+
+
+        private void Button_Click2(object sender, RoutedEventArgs e)
+        {
+            foreach (FileInformation c in dgCandidate.ItemsSource)
+            {
+                testBlock.Text += c.IsSelected + "    ";
+            }
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
