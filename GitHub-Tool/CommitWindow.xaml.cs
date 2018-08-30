@@ -23,5 +23,42 @@ namespace GitHub_Tool
         {
             InitializeComponent();
         }
+
+
+        private void chkSelectAll_Checked(object sender, RoutedEventArgs e)     //doesn't work for some reason
+        {
+            foreach (CommitTemp c in dgCandidate.ItemsSource)
+            {
+                c.IsSelected = true;
+            }
+        }
+
+        private void chkSelectAll_Unchecked(object sender, RoutedEventArgs e)    //doesn't work for some reason
+        {
+            foreach (CommitTemp c in dgCandidate.ItemsSource)
+            {
+                c.IsSelected = false;
+            }
+        }
+
+
+
+        private void download_Button(object sender, RoutedEventArgs e)    
+        {
+
+            Download download = new Download();
+
+            foreach (CommitTemp c in dgCandidate.ItemsSource)
+            {
+                if (c.IsSelected == true)
+                {
+                    download.downloadContent(c); 
+                }
+            }
+        }
+
+        
+
+
     }
 }

@@ -9,12 +9,25 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="594a78d0940de166f778d04560141a637cef2b05"/>
+            <TextBox Name="accessTokenTextBox" Text="4e3c842cecd65faef9dab3ebea4af4aa040e0725 "/>
             <Button Content="Button" Click="Button_Click"/>
         </WrapPanel>
-        <TextBox Name="term" Text="var client = MainWindow.createGithubClient()"/>
-        <TextBox Name="minNumberOfCommits" Text="1"/>
-        <TextBox Name="name" Text="NikosSyris"/>
+        <WrapPanel Margin="10">
+            <Label  Content="Search term"/>
+            <TextBox Name="term" Text="var client = MainWindow.createGithubClient()"/>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Minimum number of commits"/>
+            <TextBox Name="minNumberOfCommits" Text="1"/>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="User Name"/>
+            <TextBox Name="name" Text="NikosSyris"/>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Extension"/>
+            <TextBox Name="Extension" Text="cs"/>
+        </WrapPanel>
         <TextBox Name="size" Text=" "/>
         
         
@@ -25,7 +38,6 @@
                 <DataGridTextColumn x:Name="Owner" Binding="{Binding Owner}" Header="Owner" MinWidth="20" IsReadOnly="True" />
                 <DataGridTextColumn x:Name="Repo" Binding="{Binding Repo}" Header="Repo." IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="FilePath" Binding="{Binding FilePath}" Header="FilePath" MinWidth="250" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="Size" Binding="{Binding Size}" Header="Size" MinWidth="250" IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="NumberOfCommits" Binding="{Binding AllCommits.Count}" Header="NumberOfCommits" MinWidth="250" IsReadOnly="True"  />
                 <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
                     <DataGridCheckBoxColumn.Header>

@@ -37,7 +37,7 @@ namespace GitHub_Tool
         private void BtnUser2_Click(object sender, RoutedEventArgs e)
         {
             MainTab.Items.Clear(); //Clear previous Items in the user controls which is my tabItems
-            var userControls = new UserControl1();
+            var userControls = new UserControl2();
             tabUserPage = new TabItem { Content = userControls };
             MainTab.Items.Add(tabUserPage); // Add User Controls
             //MainTab.Items.Remove(BtnUser2);

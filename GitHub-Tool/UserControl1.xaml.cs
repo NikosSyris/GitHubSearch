@@ -38,7 +38,7 @@ namespace GitHub_Tool
             MainWindow.accessToken = accessTokenTextBox.Text;
             
 
-            var result = await search.SearchCode(term: term.Text, minNumberOfCommits: Int32.Parse(minNumberOfCommits.Text), name : name.Text);
+            var result = await search.SearchCode(term: term.Text, minNumberOfCommits: Int32.Parse(minNumberOfCommits.Text), name : name.Text, extension : Extension.Text);
             //var s = commit.getAllCommitsThatChangedAFile(result);
             //testBlock2.Text = s;
             // download.downloadContent(fileInformation);
@@ -80,55 +80,28 @@ namespace GitHub_Tool
 
 
 
-        private async void ShowCommitsOnClick(object sender, RoutedEventArgs e)
+        private  void ShowCommitsOnClick(object sender, RoutedEventArgs e)
         {
             var client = MainWindow.createGithubClient();
             CommitWindow w = new CommitWindow();
+            List<CommitTemp> commitTempList = new List<CommitTemp>();
 
 
             var x = (FileInformation)dgCandidate.CurrentCell.Item;
 
-            //this.Dispatcher.Invoke(() =>
-            //{
-            //    w.Show();
 
-            //    foreach (var commit in x.AllCommits)
-            //    {
-            //        w.fileCommitTextBox.Text += commit.Sha + "  " + commit.User.Login   +"\r\n";
-            //    }
-            //});
-
-
-
-            for (var i = 0; i < x.AllCommits.Count; i++)
+            this.Dispatcher.Invoke(() =>
             {
 
-                var file = await client
-                    .Repository
-                    .Content
-                    .GetAllContentsByRef(x.Owner, x.Repo, x.FilePath, x.AllCommits[i].Sha)
-                    .ConfigureAwait(false);
-
-                this.Dispatcher.Invoke(() =>
+                for (var i = 0; i < x.AllCommits.Count; i++)
                 {
-                        w.Show();
+                    commitTempList.Add(new CommitTemp(x.Owner, x.Repo, x.FilePath, x.AllCommits[i].Sha));
+                }
 
-                        foreach (var element in file)
-                        {
+                w.dgCandidate.ItemsSource = commitTempList;
+                w.Show();
 
-                            w.fileCommitTextBox.Text += element.Sha + "  " + element.Size + "   "  + "\r\n";
-                    
-
-                            //createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);
-
-                        }
-
-                });
-            }
-            
-
-            
-
+            });
 
         }
 

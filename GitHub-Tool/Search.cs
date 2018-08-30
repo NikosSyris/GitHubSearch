@@ -15,32 +15,35 @@ namespace GitHub_Tool
 
 
 
-        public async Task<IList<FileInformation>> SearchCode(String term, int minNumberOfCommits, String name = null) 
+        public async Task<List<FileInformation>> SearchCode(String term, int minNumberOfCommits, String extension, String name = null) 
         {
 
             var client = MainWindow.createGithubClient();
 
 
-            IList<FileInformation> files = new List<FileInformation>();
+            List<FileInformation> files = new List<FileInformation>();
 
 
-            var codeRequest = new SearchCodeRequest(term)
-            {
-                Extension = "cs",
+            var codeRequest = new SearchCodeRequest(term);   //var client = MainWindow.createGithubClient()
 
-                //User = "NikosSyris"
-            };
-
-
-            if( name != null)
+            if ( name != null)       //User = "NikosSyris"
             {
                 codeRequest.User = name;
             }
+
+            if (extension != null)   //Extension = "cs",
+            {
+                codeRequest.Extension = extension;
+            }
+
+            
 
             //if (size != null)
             //{
             //    codeRequest.Size = Range.GreaterThanOrEquals(size.Value);
             //}
+
+
 
 
 
@@ -91,12 +94,102 @@ namespace GitHub_Tool
             }
 
             //IList<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
-            IList<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
+            List<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
 
 
             return Sortedfiles;
 
         }
+
+
+
+        public async Task<List<Repository>> SearchRepos(String owner, String name)
+        {
+
+            var client = MainWindow.createGithubClient();
+
+            List<Repository> repos = new List<Repository>();
+
+
+
+            var repoRequest = new SearchRepositoriesRequest();
+            repoRequest.Size = Range.GreaterThan(1);
+            repoRequest.User = owner;
+
+            var result1 = await client.Search.SearchRepo(repoRequest);
+
+            foreach (var rep in result1.Items)
+            {
+                repos.Add(new Repository(rep.Name, rep.Owner.Login, rep.Size));
+            }
+
+
+
+            return repos;
+
+        }
+
+
+        public async Task<Folder> getRepoStructure(String owner, String repo)
+        {
+
+
+            var client = MainWindow.createGithubClient();
+            var result = await client.Repository.Content.GetAllContents(owner, repo).ConfigureAwait(false);
+
+            Folder rootFolder = new Folder("root");
+
+
+            foreach (var item in result)
+            {
+                if (item.Type == "dir")
+                {
+                    Folder newFolder = new Folder(item.Name);
+                    rootFolder.FolderList.Add(newFolder);
+                    newFolder = await getFolderContent(owner, repo, newFolder).ConfigureAwait(false);
+                }
+                else if(item.Type == "file")
+                {
+                    rootFolder.FileList.Add(new File(item.Name, item.Content));
+                    Debug.WriteLine(item.Content);
+                }
+            }
+
+            return rootFolder;
+        }
+
+
+
+        public async Task<Folder> getFolderContent(String owner, String repo, Folder folder)
+        {
+
+            var client = MainWindow.createGithubClient();
+            var result = await client.Repository.Content.GetAllContents(owner, repo, folder.Name).ConfigureAwait(false);
+            
+            foreach (var item in result)
+            {
+                if (item.Type == "file")
+                {
+                    folder.FileList.Add(new File(item.Name, item.Content));
+                }
+                else
+                {
+                    var newFolderName = folder.Name + "/" + item.Name;
+                    Folder newFolder = new Folder(newFolderName);
+                    folder.FolderList.Add(newFolder);
+                    newFolder = await getFolderContent(owner, repo, newFolder).ConfigureAwait(false);
+                }
+            }
+
+            return folder;
+        }
+
+
+
+
+
+
+
 
     }
 }

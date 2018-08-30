@@ -15,7 +15,7 @@ namespace GitHub_Tool
 
 
         // download the contents of a file form whichever commit or branch you want
-        public async void downloadContent(FileInformation fileInformation)
+        public async void downloadContent(CommitTemp fileInformation)
         {
 
             var client = MainWindow.createGithubClient();
@@ -23,6 +23,7 @@ namespace GitHub_Tool
             var owner = fileInformation.Owner;
             var repo = fileInformation.Repo;
             var filePath = fileInformation.FilePath;
+            var sha = fileInformation.Sha;
 
 
 
@@ -32,56 +33,20 @@ namespace GitHub_Tool
             //   .GetAllContents(owner, repo, filePath)
             //    .ConfigureAwait(false);
 
+            var file = await client
+                .Repository
+                .Content
+                .GetAllContentsByRef(owner, repo, filePath, sha)
+                .ConfigureAwait(false);
 
 
-
-
-            for (var i = 0; i < fileInformation.AllCommits.Count; i++)
+            foreach (var element in file)
             {
 
-                var file = await client
-                    .Repository
-                    .Content
-                    .GetAllContentsByRef(owner, repo, filePath, fileInformation.AllCommits[i].Sha)
-                    .ConfigureAwait(false);
-
-                //Console.WriteLine(fileInformation.AllCommits[i].Sha);
-
-
-
-                //Console.WriteLine(file.Count);  //= 1
-
-
-                //Console.WriteLine(file.Count);
-
-                foreach (var element in file)
-                {
-                    //Console.WriteLine(element.HtmlUrl);
-                    //Console.WriteLine(element.Content);
-                    createFolder(element.Name, fileInformation.AllCommits[i].Sha, element.HtmlUrl, element.Content);
+                createFolder(element.Name, sha, element.HtmlUrl, element.Content);
                     
                     
-                }
             }
-
-            // i should move this when i get how it works
-
-            // Prior to first API call, this will be null, because it only deals with the last call.
-            //var apiInfo = client.GetLastApiInfo();
-
-            // If the ApiInfo isn't null, there will be a property called RateLimit
-            //var rateLimit = apiInfo?.RateLimit;
-
-            //var howManyRequestsCanIMakePerHour = rateLimit?.Limit;
-            //var howManyRequestsDoIHaveLeft = rateLimit?.Remaining;
-            //var whenDoesTheLimitReset = rateLimit?.Reset; // UTC time
-
-            //Console.WriteLine(howManyRequestsCanIMakePerHour);
-            //Console.WriteLine(howManyRequestsDoIHaveLeft);
-            //Console.WriteLine(whenDoesTheLimitReset);
-
-
-            //Console.WriteLine("done");
         }
 
 
