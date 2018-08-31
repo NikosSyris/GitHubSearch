@@ -21,16 +21,11 @@
 
 
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
-              Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" >
+              Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="Name" Binding="{Binding Name}" Header="Name" MinWidth="20" IsReadOnly="True" />
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
-                    <DataGridCheckBoxColumn.Header>
-                        <CheckBox Name="chkSelectAll" Checked="chkSelectAll_Checked" Unchecked="chkSelectAll_Unchecked"></CheckBox>
-                    </DataGridCheckBoxColumn.Header>
-                </DataGridCheckBoxColumn>
-
-
+                <DataGridTextColumn x:Name="Path" Binding="{Binding Path}" Header="Path" MinWidth="20" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="Size" Binding="{Binding Size}" Header="Size" MinWidth="20" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
 

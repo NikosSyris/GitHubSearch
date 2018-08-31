@@ -47,13 +47,19 @@ namespace GitHub_Tool
             RepositoryWindow w;
             List<Repository> repoList = new List<Repository>();
 
-            var x = (Repository)dgCandidate.CurrentCell.Item;
-            Folder root = await search.getRepoStructure(x.Owner, x.Name);
-            w = new RepositoryWindow(root);
+            var tempRepo = (Repository)dgCandidate.CurrentCell.Item;
+            tempRepo = await search.getRepoStructure(tempRepo);
+            w = new RepositoryWindow(tempRepo.RootFolder);
+            w.dgCandidate.ItemsSource = tempRepo.RepositoryContentList;
+
+            //foreach (var item in tempRepo.RepositoryContentList)
+            //{
+            //    item.
+            //}
 
             this.Dispatcher.Invoke(() =>
             {
-                //w.testBlock.Text = temp;
+
 
                 w.Show();
             });

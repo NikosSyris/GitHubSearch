@@ -9,7 +9,7 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="4e3c842cecd65faef9dab3ebea4af4aa040e0725 "/>
+            <TextBox Name="accessTokenTextBox" Text=" "/>
             <Button Content="Button" Click="Button_Click"/>
         </WrapPanel>
         <WrapPanel Margin="10">

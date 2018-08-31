@@ -44,12 +44,24 @@ namespace GitHub_Tool
 
             var tree = sender as TreeView;
             tree.Items.Add(item);
-
-            
-
-
         }
 
+        //private void DatagridLoaded(object sender, RoutedEventArgs e)
+        //{
+
+        //    //// ... Create a List of objects.
+        //    //var items = new List<Dog>();
+        //    //items.Add(new Dog("Fido", 10));
+        //    //items.Add(new Dog("Spark", 20));
+        //    //items.Add(new Dog("Fluffy", 4));
+
+        //    //// ... Assign ItemsSource of DataGrid.
+        //    //var datagrid = sender as DataGrid;
+        //    //datagrid.ItemsSource = items;
+
+
+
+        //}
 
 
         private  TreeViewItem  GetFolder(Folder folder, TreeViewItem item)

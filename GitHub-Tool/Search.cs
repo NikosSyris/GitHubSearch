@@ -43,12 +43,6 @@ namespace GitHub_Tool
             //    codeRequest.Size = Range.GreaterThanOrEquals(size.Value);
             //}
 
-
-
-
-
-
-
             //codeRequest.Size = Range.GreaterThan(500);
             //NikosSyris/GitHub-Tool
 
@@ -93,7 +87,6 @@ namespace GitHub_Tool
                 }
             }
 
-            //IList<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
             List<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
 
 
@@ -130,15 +123,17 @@ namespace GitHub_Tool
         }
 
 
-        public async Task<Folder> getRepoStructure(String owner, String repo)
+        public async Task<Repository> getRepoStructure(Repository repository)
         {
 
-
             var client = MainWindow.createGithubClient();
-            var result = await client.Repository.Content.GetAllContents(owner, repo).ConfigureAwait(false);
+            
+            var result = await client.Repository.Content.GetAllContents(repository.Owner, repository.Name).ConfigureAwait(false);
 
             Folder rootFolder = new Folder("root");
 
+
+            //rootFolder = await getFolderContent(owner, repo, rootFolder).ConfigureAwait(false);
 
             foreach (var item in result)
             {
@@ -146,38 +141,42 @@ namespace GitHub_Tool
                 {
                     Folder newFolder = new Folder(item.Name);
                     rootFolder.FolderList.Add(newFolder);
-                    newFolder = await getFolderContent(owner, repo, newFolder).ConfigureAwait(false);
+                    newFolder = await getFolderContent(repository, newFolder).ConfigureAwait(false);
                 }
-                else if(item.Type == "file")
+                else if (item.Type == "file")
                 {
                     rootFolder.FileList.Add(new File(item.Name, item.Content));
-                    Debug.WriteLine(item.Content);
+                    repository.RepositoryContentList.Add(item);
                 }
             }
 
-            return rootFolder;
+            repository.RootFolder = rootFolder;
+
+
+            return repository;
         }
 
 
 
-        public async Task<Folder> getFolderContent(String owner, String repo, Folder folder)
+        public async Task<Folder> getFolderContent(Repository repository, Folder folder)
         {
 
             var client = MainWindow.createGithubClient();
-            var result = await client.Repository.Content.GetAllContents(owner, repo, folder.Name).ConfigureAwait(false);
+            var result = await client.Repository.Content.GetAllContents(repository.Owner, repository.Name, folder.Name).ConfigureAwait(false);
             
             foreach (var item in result)
             {
                 if (item.Type == "file")
                 {
                     folder.FileList.Add(new File(item.Name, item.Content));
+                    repository.RepositoryContentList.Add(item);
                 }
                 else
                 {
                     var newFolderName = folder.Name + "/" + item.Name;
                     Folder newFolder = new Folder(newFolderName);
                     folder.FolderList.Add(newFolder);
-                    newFolder = await getFolderContent(owner, repo, newFolder).ConfigureAwait(false);
+                    newFolder = await getFolderContent(repository, newFolder).ConfigureAwait(false);
                 }
             }
 
