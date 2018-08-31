@@ -52,15 +52,10 @@ namespace GitHub_Tool
             w = new RepositoryWindow(tempRepo.RootFolder);
             w.dgCandidate.ItemsSource = tempRepo.RepositoryContentList;
 
-            //foreach (var item in tempRepo.RepositoryContentList)
-            //{
-            //    item.
-            //}
+
 
             this.Dispatcher.Invoke(() =>
             {
-
-
                 w.Show();
             });
         }

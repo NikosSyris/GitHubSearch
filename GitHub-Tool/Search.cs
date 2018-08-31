@@ -66,7 +66,7 @@ namespace GitHub_Tool
 
                     var commitRequest = new CommitRequest { Path = filePath };
 
-                    var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false);
+                    var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false); 
                     
                     if (commitsForFile.Count > minNumberOfCommits)    // TODO also put equals
                     {
@@ -145,8 +145,8 @@ namespace GitHub_Tool
                 }
                 else if (item.Type == "file")
                 {
-                    rootFolder.FileList.Add(new File(item.Name, item.Content));
-                    repository.RepositoryContentList.Add(item);
+                    rootFolder.FileList.Add(new File(item.Name, item.Path, repository.Owner, repository.Name));
+                    repository.RepositoryContentList.Add(new File(item.Name, item.Path, repository.Owner, repository.Name));
                 }
             }
 
@@ -168,8 +168,8 @@ namespace GitHub_Tool
             {
                 if (item.Type == "file")
                 {
-                    folder.FileList.Add(new File(item.Name, item.Content));
-                    repository.RepositoryContentList.Add(item);
+                    folder.FileList.Add(new File(item.Name, item.Path, repository.Owner, repository.Name));
+                    repository.RepositoryContentList.Add(new File(item.Name, item.Path, repository.Owner, repository.Name));
                 }
                 else
                 {
@@ -186,7 +186,19 @@ namespace GitHub_Tool
 
 
 
+        public async Task<IReadOnlyList<GitHubCommit>> getCommitsForFIle(string owner, string repo, string path)
+        {
 
+            var client = MainWindow.createGithubClient();
+            var commitRequest = new CommitRequest { Path = path };
+
+            var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false);
+
+            return commitsForFile;
+
+
+
+        }
 
 
 

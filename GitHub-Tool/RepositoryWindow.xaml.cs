@@ -46,22 +46,7 @@ namespace GitHub_Tool
             tree.Items.Add(item);
         }
 
-        //private void DatagridLoaded(object sender, RoutedEventArgs e)
-        //{
 
-        //    //// ... Create a List of objects.
-        //    //var items = new List<Dog>();
-        //    //items.Add(new Dog("Fido", 10));
-        //    //items.Add(new Dog("Spark", 20));
-        //    //items.Add(new Dog("Fluffy", 4));
-
-        //    //// ... Assign ItemsSource of DataGrid.
-        //    //var datagrid = sender as DataGrid;
-        //    //datagrid.ItemsSource = items;
-
-
-
-        //}
 
 
         private  TreeViewItem  GetFolder(Folder folder, TreeViewItem item)
@@ -86,6 +71,33 @@ namespace GitHub_Tool
 
 
 
+        private async void ShowCommitsOnClick(object sender, RoutedEventArgs e)
+        {
+            var client = MainWindow.createGithubClient();
+            Search search = new Search();
+            CommitWindow w = new CommitWindow();
+            List<CommitTemp> commitTempList = new List<CommitTemp>();
+
+
+            var x = (File)dgCandidate.CurrentCell.Item;
+
+            var commitsForFile = await search.getCommitsForFIle(x.Owner, x.RepoName, x.Path).ConfigureAwait(false);
+
+
+            this.Dispatcher.Invoke(() =>
+            {
+
+                for (var i = 0; i < commitsForFile.Count; i++)
+                {
+                    commitTempList.Add(new CommitTemp(x.Owner, x.RepoName, x.Path, commitsForFile[i].Sha));
+                }
+
+                w.dgCandidate.ItemsSource = commitTempList;
+                w.Show();
+
+            });
+
+        }
 
 
 
@@ -95,16 +107,24 @@ namespace GitHub_Tool
 
 
 
+        //private void DatagridLoaded(object sender, RoutedEventArgs e)
+        //{
+
+        //    //// ... Create a List of objects.
+        //    //var items = new List<Dog>();
+        //    //items.Add(new Dog("Fido", 10));
+        //    //items.Add(new Dog("Spark", 20));
+        //    //items.Add(new Dog("Fluffy", 4));
+
+        //    //// ... Assign ItemsSource of DataGrid.
+        //    //var datagrid = sender as DataGrid;
+        //    //datagrid.ItemsSource = items;
 
 
 
+        //}
 
-
-
-
-
-            private void TreeView_SelectedItemChanged(object sender,
-            RoutedPropertyChangedEventArgs<object> e)
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var tree = sender as TreeView;
 
@@ -118,6 +138,6 @@ namespace GitHub_Tool
                 this.Title = "Selected: " + tree.SelectedItem.ToString();
             }
         }
-    
+
     }
 }
