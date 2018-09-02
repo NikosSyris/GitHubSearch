@@ -9,7 +9,7 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="33a834fc03ec2a8b17716b00596291a1f1ac91d9 "/>
+            <TextBox Name="accessTokenTextBox" Text=" "/>
             <Button Content="Button" Click="Button_Click"/>
         </WrapPanel>
         <WrapPanel Margin="10">
@@ -28,10 +28,14 @@
             <Label  Content="Extension"/>
             <TextBox Name="Extension" Text="cs"/>
         </WrapPanel>
-        <TextBox Name="size" Text=" "/>
-        
-        
-        
+        <WrapPanel Margin="10">
+            <Label  Content="size"/>
+            <TextBox Name="size" Text="0"/>
+        </WrapPanel>
+
+
+
+
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
               Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" >
             <DataGrid.Columns>
@@ -39,11 +43,6 @@
                 <DataGridTextColumn x:Name="Repo" Binding="{Binding Repo}" Header="Repo." IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="FilePath" Binding="{Binding FilePath}" Header="FilePath" MinWidth="250" IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="NumberOfCommits" Binding="{Binding AllCommits.Count}" Header="NumberOfCommits" MinWidth="250" IsReadOnly="True"  />
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
-                    <DataGridCheckBoxColumn.Header>
-                        <CheckBox Name="chkSelectAll" Checked="chkSelectAll_Checked" Unchecked="chkSelectAll_Unchecked"></CheckBox>
-                    </DataGridCheckBoxColumn.Header>
-                </DataGridCheckBoxColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -61,9 +60,6 @@
             </DataGrid.Columns>
         </DataGrid>
         
-        <Button Content="Button" x:Name="button" Click="Button_Click2"/>
-        <TextBlock   x:Name="testBlock" Text=" "  x:FieldModifier="public"  />
-
 
     </StackPanel>
 </UserControl>

@@ -15,14 +15,10 @@ namespace GitHub_Tool
 
 
 
-        public async Task<List<FileInformation>> SearchCode(String term, int minNumberOfCommits, String extension, String name = null) 
+        public async Task<List<FileInformation>> SearchCode(String term, int minNumberOfCommits, String extension = null, String name = null, int size = 0) 
         {
 
-            var client = MainWindow.createGithubClient();
-
-
             List<FileInformation> files = new List<FileInformation>();
-
 
             var codeRequest = new SearchCodeRequest(term);   //var client = MainWindow.createGithubClient()
 
@@ -36,18 +32,15 @@ namespace GitHub_Tool
                 codeRequest.Extension = extension;
             }
 
-            
-
-            //if (size != null)
+            //if (size != 0)
             //{
-            //    codeRequest.Size = Range.GreaterThanOrEquals(size.Value);
+            //    codeRequest.Size = Range.GreaterThanOrEquals(size);
             //}
 
             //codeRequest.Size = Range.GreaterThan(500);
             //NikosSyris/GitHub-Tool
 
-            var result = await client.Search.SearchCode(codeRequest).ConfigureAwait(false);
-
+            var result = await GlobalVariables.client.Search.SearchCode(codeRequest).ConfigureAwait(false);
 
             var numberOfResults = result.TotalCount;
             codeRequest.Page = 0;
@@ -59,14 +52,12 @@ namespace GitHub_Tool
                 for (var j = 0; j < 100; j++)       // na valw .perPage instead of 100
                 {
                     var temp = result.Items.ElementAt(j);
-                    var filePath = temp.Path;
-                    //var sizeTemp = temp.Repository.Size;  
+                    var filePath = temp.Path; 
                     var repo = temp.Repository.Name;
                     var owner = temp.Repository.Owner.Login;
 
                     var commitRequest = new CommitRequest { Path = filePath };
-
-                    var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false); 
+                    var commitsForFile = await GlobalVariables.client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false); 
                     
                     if (commitsForFile.Count > minNumberOfCommits)    // TODO also put equals
                     {
@@ -78,7 +69,6 @@ namespace GitHub_Tool
                     {
                         break;
                     }
-
                 }
 
                 if (numberOfResults == 0)
@@ -87,11 +77,7 @@ namespace GitHub_Tool
                 }
             }
 
-            List<FileInformation> Sortedfiles = files.OrderByDescending(x => x.AllCommits.Count).ToList();
-
-
-            return Sortedfiles;
-
+            return files;
         }
 
 
@@ -99,36 +85,28 @@ namespace GitHub_Tool
         public async Task<List<Repository>> SearchRepos(String owner, String name)
         {
 
-            var client = MainWindow.createGithubClient();
 
             List<Repository> repos = new List<Repository>();
-
-
 
             var repoRequest = new SearchRepositoriesRequest();
             repoRequest.Size = Range.GreaterThan(1);
             repoRequest.User = owner;
 
-            var result1 = await client.Search.SearchRepo(repoRequest);
+            var result1 = await GlobalVariables.client.Search.SearchRepo(repoRequest);
 
             foreach (var rep in result1.Items)
             {
                 repos.Add(new Repository(rep.Name, rep.Owner.Login, rep.Size));
             }
 
-
-
             return repos;
-
         }
 
 
         public async Task<Repository> getRepoStructure(Repository repository)
         {
-
-            var client = MainWindow.createGithubClient();
-            
-            var result = await client.Repository.Content.GetAllContents(repository.Owner, repository.Name).ConfigureAwait(false);
+        
+            var result = await GlobalVariables.client.Repository.Content.GetAllContents(repository.Owner, repository.Name).ConfigureAwait(false);
 
             Folder rootFolder = new Folder("root");
 
@@ -161,8 +139,7 @@ namespace GitHub_Tool
         public async Task<Folder> getFolderContent(Repository repository, Folder folder)
         {
 
-            var client = MainWindow.createGithubClient();
-            var result = await client.Repository.Content.GetAllContents(repository.Owner, repository.Name, folder.Name).ConfigureAwait(false);
+            var result = await GlobalVariables.client.Repository.Content.GetAllContents(repository.Owner, repository.Name, folder.Name).ConfigureAwait(false);
             
             foreach (var item in result)
             {
@@ -171,7 +148,7 @@ namespace GitHub_Tool
                     folder.FileList.Add(new File(item.Name, item.Path, repository.Owner, repository.Name));
                     repository.RepositoryContentList.Add(new File(item.Name, item.Path, repository.Owner, repository.Name));
                 }
-                else
+                else if (item.Type == "dir")
                 {
                     var newFolderName = folder.Name + "/" + item.Name;
                     Folder newFolder = new Folder(newFolderName);
@@ -188,16 +165,10 @@ namespace GitHub_Tool
 
         public async Task<IReadOnlyList<GitHubCommit>> getCommitsForFIle(string owner, string repo, string path)
         {
-
-            var client = MainWindow.createGithubClient();
             var commitRequest = new CommitRequest { Path = path };
-
-            var commitsForFile = await client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false);
+            var commitsForFile = await GlobalVariables.client.Repository.Commit.GetAll(owner, repo, commitRequest).ConfigureAwait(false);
 
             return commitsForFile;
-
-
-
         }
 
 
