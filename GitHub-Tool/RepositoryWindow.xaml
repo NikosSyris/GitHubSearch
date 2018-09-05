@@ -15,13 +15,12 @@
             Margin="10,10,0,0" 
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollBarVisibility= "Visible"
-            Loaded="TreeView_Loaded"
-            SelectedItemChanged="TreeView_SelectedItemChanged" 
+            Loaded="loadTreeView" 
             Background="White"/>
 
 
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
-              Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1">
+              Name="filesDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="Name" Binding="{Binding Name}" Header="Name" MinWidth="20" IsReadOnly="True" />
                 <DataGridTextColumn x:Name="Path" Binding="{Binding Path}" Header="Path" MinWidth="20" IsReadOnly="True" />
@@ -30,7 +29,7 @@
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="ShowCommitsOnClick">Show commits</Button>
+                            <Button Click="showCommitsOnClick">Show commits</Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -12,7 +12,7 @@ namespace GitHub_Tool
         public string Name { get; set; }
         public string Owner { get; set; }
         public long Size { get; set; }
-        public List<File> RepositoryContentList { get; set; }   //ta files tou project
+        public List<File> Files { get; set; }   
         public Folder RootFolder { get; set; }
 
         public Repository(string name, string owner, long size) //, string htmlUrl
@@ -20,7 +20,7 @@ namespace GitHub_Tool
             Name = name;
             Owner = owner;
             Size = size;
-            RepositoryContentList = new List<File>();
+            Files = new List<File>();
         }
     }
 }

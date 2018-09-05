@@ -14,9 +14,7 @@ using System.Windows.Shapes;
 
 namespace GitHub_Tool
 {
-    /// <summary>
-    /// Interaction logic for ContentWindow.xaml
-    /// </summary>
+
     public partial class ContentWindow : Window
     {
         public ContentWindow()

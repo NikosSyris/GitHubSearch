@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace GitHub_Tool
 {
@@ -21,16 +11,17 @@ namespace GitHub_Tool
     {
 
         private Folder root;
-
+        Search search;
 
         public RepositoryWindow(Folder rootFolder)
         {
             InitializeComponent();
             root = rootFolder;
+            search = new Search();
         }
 
 
-        private void TreeView_Loaded(object sender, RoutedEventArgs e)
+        private void loadTreeView(object sender, RoutedEventArgs e)
         {
 
             //Image image = new Image();
@@ -40,16 +31,14 @@ namespace GitHub_Tool
             TreeViewItem item = new TreeViewItem();
             item.Header = root.Name;
 
-            item = GetFolder(root,item);
+            item = getFolder(root,item);
 
             var tree = sender as TreeView;
             tree.Items.Add(item);
         }
 
 
-
-
-        private  TreeViewItem  GetFolder(Folder folder, TreeViewItem item)
+        private  TreeViewItem  getFolder(Folder folder, TreeViewItem item)
         {
 
             foreach (Folder tempFolder in folder.FolderList)
@@ -57,7 +46,7 @@ namespace GitHub_Tool
                 TreeViewItem tempItem = new TreeViewItem();
                 tempItem.Header = tempFolder.Name;
                 item.Items.Add(tempItem);
-                tempItem = GetFolder(tempFolder, tempItem);
+                tempItem = getFolder(tempFolder, tempItem);
             }
 
             foreach (File file in folder.FileList)
@@ -69,75 +58,28 @@ namespace GitHub_Tool
         }
 
 
-
-
-        private async void ShowCommitsOnClick(object sender, RoutedEventArgs e)
+        private async void showCommitsOnClick(object sender, RoutedEventArgs e)
         {
-            var client = MainWindow.createGithubClient();
-            Search search = new Search();
-            CommitWindow w = new CommitWindow();
-            List<CommitTemp> commitTempList = new List<CommitTemp>();
+            
+            CommitWindow commitWindow = new CommitWindow();
 
-
-            var x = (File)dgCandidate.CurrentCell.Item;
-
-            var commitsForFile = await search.getCommitsForFIle(x.Owner, x.RepoName, x.Path).ConfigureAwait(false);
-
+            var selectedFile = (File)filesDataGrid.CurrentCell.Item;
+            List<Commit> commitList = await search.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path).ConfigureAwait(false);
 
             this.Dispatcher.Invoke(() =>
             {
-
-                for (var i = 0; i < commitsForFile.Count; i++)
-                {
-                    commitTempList.Add(new CommitTemp(x.Owner, x.RepoName, x.Path, commitsForFile[i].Sha));
-                }
-
-                w.dgCandidate.ItemsSource = commitTempList;
-                w.Show();
-
+                commitWindow.CommitsDataGrid.ItemsSource = commitList;
+                commitWindow.Show();
             });
-
         }
 
-
-
-
-
-
-
-
-
-        //private void DatagridLoaded(object sender, RoutedEventArgs e)
-        //{
-
-        //    //// ... Create a List of objects.
-        //    //var items = new List<Dog>();
-        //    //items.Add(new Dog("Fido", 10));
-        //    //items.Add(new Dog("Spark", 20));
-        //    //items.Add(new Dog("Fluffy", 4));
-
-        //    //// ... Assign ItemsSource of DataGrid.
-        //    //var datagrid = sender as DataGrid;
-        //    //datagrid.ItemsSource = items;
-
-
-
-        //}
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)
         {
-            var tree = sender as TreeView;
 
-            if (tree.SelectedItem is TreeViewItem)
-            {
-                var item = tree.SelectedItem as TreeViewItem;
-                this.Title = "Selected header: " + item.Header.ToString();
-            }
-            else if (tree.SelectedItem is string)
-            {
-                this.Title = "Selected: " + tree.SelectedItem.ToString();
-            }
+            var currentCell = e.ClipboardRowContent[filesDataGrid.CurrentCell.Column.DisplayIndex];
+            e.ClipboardRowContent.Clear();
+            e.ClipboardRowContent.Add(currentCell);
+
         }
-
     }
 }

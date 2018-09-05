@@ -10,23 +10,25 @@ using System.ComponentModel;
 
 namespace GitHub_Tool
 {
-    class CommitTemp
+    public class Commit
     {
 
         public string Owner { get; set; }
-        public string Repo { get; set; }
+        public string RepoName { get; set; }
         public string FilePath { get; set; }
         public string Sha { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public int Size { get; set; }
         private bool _IsSelected = false;
         public bool IsSelected { get { return _IsSelected; } set { _IsSelected = value; OnChanged("IsSelected"); } }
 
-        public CommitTemp(string owner, string repo, string filePath, string sha)  //, int size
+        public Commit(string owner, string repoName, string filePath, string sha, DateTimeOffset createdAt)  //, int size
         {
             Owner = owner;
-            Repo = repo;
+            RepoName = repoName;
             FilePath = filePath;
             Sha = sha;
+            CreatedAt = createdAt;
         }
 
         #region INotifyPropertyChanged Members

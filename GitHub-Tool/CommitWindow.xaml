@@ -9,18 +9,19 @@
     
     <StackPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
-                  Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" >
+                  Name="CommitsDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="Sha" Binding="{Binding Sha}" Header="Sha" MinWidth="20" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="CreatedAt" Binding="{Binding CreatedAt}" Header="CreatedAt" MinWidth="20" IsReadOnly="True" />
                 <DataGridCheckBoxColumn Binding="{Binding IsSelected}">
                     <DataGridCheckBoxColumn.Header>
-                        <CheckBox Name="chkSelectAll" Checked="chkSelectAll_Checked" Unchecked="chkSelectAll_Unchecked"></CheckBox>
+                        <CheckBox Name="chkSelectAll" Checked="checkAllCommits" Unchecked="uncheckAllCommits"></CheckBox>
                     </DataGridCheckBoxColumn.Header>
                 </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="download" x:Name="download" Click="download_Button"/>
+        <Button Content="Download" x:Name="downloadButton" Click="downloadButtonClick"/>
     </StackPanel>
 
 </Window>

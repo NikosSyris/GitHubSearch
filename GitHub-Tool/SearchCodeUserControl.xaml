@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GitHub_Tool.UserControl1"
+﻿<UserControl x:Class="GitHub_Tool.SearchCodeUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,8 +9,8 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text=" "/>
-            <Button Content="Button" Click="Button_Click"/>
+            <TextBox Name="accessTokenTextBox" Text="16e74b4d2987565e9c7666f67525e4928655053c"/>
+            <Button Content="Search" Click="searchCodeButtonClick"/>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
@@ -33,27 +33,29 @@
             <TextBox Name="size" Text="0"/>
         </WrapPanel>
 
+        <TextBox Name="numberOfResults" Text=""/>
+
 
 
 
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
-              Name="dgCandidate" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" >
+              Name="filesDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell" >
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="Owner" Binding="{Binding Owner}" Header="Owner" MinWidth="20" IsReadOnly="True" />
-                <DataGridTextColumn x:Name="Repo" Binding="{Binding Repo}" Header="Repo." IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="FilePath" Binding="{Binding FilePath}" Header="FilePath" MinWidth="250" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="RepoName" Binding="{Binding RepoName}" Header="RepoName" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="Path" Binding="{Binding Path}" Header="Path" MinWidth="250" IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="NumberOfCommits" Binding="{Binding AllCommits.Count}" Header="NumberOfCommits" MinWidth="250" IsReadOnly="True"  />
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="ShowContentOnClick">Show content</Button>
+                            <Button Click="showContentOnClick">Show content</Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="ShowCommitsOnClick">Show commits</Button>
+                            <Button Click="showCommitsOnClick">Show commits</Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
