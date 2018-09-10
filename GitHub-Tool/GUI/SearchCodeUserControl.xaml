@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GitHub_Tool.SearchCodeUserControl"
+﻿<UserControl x:Class="GitHub_Tool.GUI.SearchCodeUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,12 +9,12 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="16e74b4d2987565e9c7666f67525e4928655053c"/>
+            <TextBox Name="accessTokenTextBox" Text=""/>
             <Button Content="Search" Click="searchCodeButtonClick"/>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
-            <TextBox Name="term" Text="var client = MainWindow.createGithubClient()"/>
+            <TextBox Name="term" Text=" createGithubClient()"/>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Minimum number of commits"/>
@@ -45,13 +45,13 @@
                 <DataGridTextColumn x:Name="RepoName" Binding="{Binding RepoName}" Header="RepoName" IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="Path" Binding="{Binding Path}" Header="Path" MinWidth="250" IsReadOnly="True"  />
                 <DataGridTextColumn x:Name="NumberOfCommits" Binding="{Binding AllCommits.Count}" Header="NumberOfCommits" MinWidth="250" IsReadOnly="True"  />
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Click="showContentOnClick">Show content</Button>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridHyperlinkColumn Header="Url" Binding="{Binding HtmlUrl}">
+                    <DataGridHyperlinkColumn.ElementStyle>
+                        <Style>
+                            <EventSetter Event="Hyperlink.Click" Handler="HyperlinkOnClick" />
+                        </Style>
+                    </DataGridHyperlinkColumn.ElementStyle>
+                </DataGridHyperlinkColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

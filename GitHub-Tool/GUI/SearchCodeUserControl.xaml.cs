@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using GitHub_Tool.Action;
+using GitHub_Tool.Model;
 
-namespace GitHub_Tool
+namespace GitHub_Tool.GUI
 {
 
     public partial class SearchCodeUserControl : UserControl
     {
 
-        Search search;
+        CodeSearch codeSearch;
 
         public SearchCodeUserControl()
         {
             InitializeComponent();
-            search = new Search();
+            codeSearch = new CodeSearch();
         }
 
 
@@ -23,24 +27,9 @@ namespace GitHub_Tool
             GlobalVariables.accessToken = accessTokenTextBox.Text;
             GlobalVariables.client = GlobalVariables.createGithubClient();
 
-            var result = await search.searchCode(term.Text, Int32.Parse(minNumberOfCommits.Text), Extension.Text, name.Text, Int32.Parse(size.Text) );
+            var result = await codeSearch.searchCode(term.Text, Int32.Parse(minNumberOfCommits.Text), Extension.Text, name.Text, Int32.Parse(size.Text) );
             filesDataGrid.ItemsSource = result;
             numberOfResults.Text = result.Count.ToString();
-        }
-
-
-        private  async void showContentOnClick(object sender, RoutedEventArgs e)
-        {
-            ContentWindow contentWindow = new ContentWindow();
-            var tempFile = (File)filesDataGrid.CurrentCell.Item;
-
-            var filesLatestVersion = await search.getLatestVersion(tempFile.Owner, tempFile.RepoName, tempFile.Path);
-
-            this.Dispatcher.Invoke(() =>
-            {
-                contentWindow.Show();
-                contentWindow.fileContentTextBox.Text = filesLatestVersion.Content;
-            });
         }
 
 
@@ -67,6 +56,12 @@ namespace GitHub_Tool
             e.ClipboardRowContent.Clear();
             e.ClipboardRowContent.Add(currentCell);
 
+        }
+
+        private void HyperlinkOnClick(object sender, RoutedEventArgs e)
+        {
+            Hyperlink link = (Hyperlink)e.OriginalSource;
+            Process.Start(link.NavigateUri.AbsoluteUri);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace GitHub_Tool
+namespace GitHub_Tool.Model
 {
     public static class GlobalVariables
     {

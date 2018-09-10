@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using Octokit;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 
-namespace GitHub_Tool
+namespace GitHub_Tool.GUI
 {
     public partial class MainWindow : Window
     {

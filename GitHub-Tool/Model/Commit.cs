@@ -1,14 +1,7 @@
 ﻿using System;
-using Octokit;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using Octokit.Internal;
 using System.ComponentModel;
 
-namespace GitHub_Tool
+namespace GitHub_Tool.Model
 {
     public class Commit
     {
@@ -19,16 +12,18 @@ namespace GitHub_Tool
         public string Sha { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public int Size { get; set; }
+        public int Order { get; set; }
         private bool _IsSelected = false;
         public bool IsSelected { get { return _IsSelected; } set { _IsSelected = value; OnChanged("IsSelected"); } }
 
-        public Commit(string owner, string repoName, string filePath, string sha, DateTimeOffset createdAt)  //, int size
+        public Commit(string owner, string repoName, string filePath, string sha, DateTimeOffset createdAt, int order)  //, int size
         {
             Owner = owner;
             RepoName = repoName;
             FilePath = filePath;
             Sha = sha;
             CreatedAt = createdAt;
+            Order = order;
         }
 
         #region INotifyPropertyChanged Members

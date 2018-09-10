@@ -1,14 +1,20 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using GitHub_Tool.Model;
+using GitHub_Tool.Action;
 
-namespace GitHub_Tool
+namespace GitHub_Tool.GUI
 {
 
     public partial class CommitWindow : Window
     {
+
+        Download download;
+
         public CommitWindow()
         {
             InitializeComponent();
+            download = new Download();
         }
 
 
@@ -32,9 +38,7 @@ namespace GitHub_Tool
 
         private void downloadButtonClick(object sender, RoutedEventArgs e)    
         {
-
-            Download download = new Download();
-
+          
             foreach (Commit commit in CommitsDataGrid.ItemsSource)
             {
                 if (commit.IsSelected == true)

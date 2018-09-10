@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using GitHub_Tool.Action;
+using GitHub_Tool.Model;
 
-
-namespace GitHub_Tool
+namespace GitHub_Tool.GUI
 {
 
 
@@ -11,13 +14,13 @@ namespace GitHub_Tool
     {
 
         private Folder root;
-        Search search;
+        CodeSearch codeSearch;
 
         public RepositoryWindow(Folder rootFolder)
         {
             InitializeComponent();
             root = rootFolder;
-            search = new Search();
+            codeSearch = new CodeSearch();
         }
 
 
@@ -64,7 +67,7 @@ namespace GitHub_Tool
             CommitWindow commitWindow = new CommitWindow();
 
             var selectedFile = (File)filesDataGrid.CurrentCell.Item;
-            List<Commit> commitList = await search.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path).ConfigureAwait(false);
+            List<Commit> commitList = await codeSearch.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path).ConfigureAwait(false);
 
             this.Dispatcher.Invoke(() =>
             {
@@ -80,6 +83,12 @@ namespace GitHub_Tool
             e.ClipboardRowContent.Clear();
             e.ClipboardRowContent.Add(currentCell);
 
+        }
+
+        private void HyperlinkOnClick(object sender, RoutedEventArgs e)
+        {
+            Hyperlink link = (Hyperlink)e.OriginalSource;
+            Process.Start(link.NavigateUri.AbsoluteUri);
         }
     }
 }

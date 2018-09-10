@@ -1,20 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using GitHub_Tool.Action;
+using GitHub_Tool.Model;
 
-
-namespace GitHub_Tool
+namespace GitHub_Tool.GUI
 {
 
     public partial class SearchRepoUserControl : UserControl
     {
 
-        Search search; 
+        RepoSearch repoSearch;
+        RepoManager repoManager;
 
         public SearchRepoUserControl()
         {
             InitializeComponent();
-            search = new Search();
+            repoSearch = new RepoSearch();
+            repoManager = new RepoManager();
         }
 
         private async void searchReposButtonClick(object sender, RoutedEventArgs e)
@@ -22,7 +27,7 @@ namespace GitHub_Tool
             GlobalVariables.accessToken = accessTokenTextBox.Text;
             GlobalVariables.client = GlobalVariables.createGithubClient();
 
-            var result = await search.searchRepos(owner : owner.Text, name : repo.Text);
+            var result = await repoSearch.searchRepos(ownerTextBox.Text, Int32.Parse(starsTextBox.Text), Int32.Parse(sizeTextBox.Text));
             reposDataGrid.ItemsSource = result;
 
         }
@@ -32,7 +37,7 @@ namespace GitHub_Tool
             RepositoryWindow repositoryWindow;
             var tempRepo = (Repository)reposDataGrid.CurrentCell.Item;
 
-            tempRepo = await search.getRepoStructure(tempRepo);
+            tempRepo = await repoManager.getRepoStructure(tempRepo);
             repositoryWindow = new RepositoryWindow(tempRepo.RootFolder);
             repositoryWindow.filesDataGrid.ItemsSource = tempRepo.Files;
 
@@ -50,6 +55,12 @@ namespace GitHub_Tool
             e.ClipboardRowContent.Clear();
             e.ClipboardRowContent.Add(currentCell);
 
+        }
+
+        private void HyperlinkOnClick(object sender, RoutedEventArgs e)
+        {
+            Hyperlink link = (Hyperlink)e.OriginalSource;
+            Process.Start(link.NavigateUri.AbsoluteUri);
         }
     }
 }

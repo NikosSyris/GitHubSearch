@@ -1,0 +1,59 @@
+﻿<Window x:Class="GitHub_Tool.GUI.RepositoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GitHub_Tool"
+        mc:Ignorable="d"
+        Title="RepositoryWindow" Height="450" Width="800">
+    <ScrollViewer>
+        <StackPanel>
+
+            <Label  Content="Repo Structure" HorizontalAlignment="Center" FontSize="16"/>
+
+            <TreeView
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                MinHeight="400"
+                MinWidth="800" 
+                MaxHeight="400"
+                Margin="10,10,0,0" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility= "Visible" 
+                Loaded="loadTreeView" 
+                Background="White"/>
+
+
+            <Label  Content="Repo files" HorizontalAlignment="Center" FontSize="16"/>
+
+            <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
+                  Name="filesDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="Name" Binding="{Binding Name}" Header="Name" MinWidth="20" IsReadOnly="True" />
+                    <DataGridTextColumn x:Name="Path" Binding="{Binding Path}" Header="Path" MinWidth="20" IsReadOnly="True" />
+                    <DataGridHyperlinkColumn Header="Url" Binding="{Binding HtmlUrl}">
+                        <DataGridHyperlinkColumn.ElementStyle>
+                            <Style>
+                                <EventSetter Event="Hyperlink.Click" Handler="HyperlinkOnClick" />
+                            </Style>
+                        </DataGridHyperlinkColumn.ElementStyle>
+                    </DataGridHyperlinkColumn>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Click="showCommitsOnClick">Show commits</Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+
+
+
+
+        </StackPanel>
+    </ScrollViewer>
+
+</Window>
