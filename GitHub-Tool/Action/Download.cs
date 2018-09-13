@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Octokit;
+using System;
 using Model =  GitHub_Tool.Model;
 
 namespace GitHub_Tool.Action
@@ -11,14 +12,21 @@ namespace GitHub_Tool.Action
         {
             codeSearch = new CodeSearch();
 
-            var file = await codeSearch.getSpecificVersion(commit.Owner, commit.RepoName, commit.FilePath, commit.Sha).ConfigureAwait(false);              
-            String path =  createFolder(commit.Owner, commit.RepoName, file.Name, commit.Order.ToString(), commit.CreatedAt);
-
-            using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(path))
+            try
             {
-                streamWriter.WriteLine(file.HtmlUrl + "\r\n" + commit.Sha + " " + commit.CreatedAt + "\r\n");
-                streamWriter.Write(file.Content);
+                var file = await codeSearch.getSpecificVersion(commit.Owner, commit.RepoName, commit.FilePath, commit.Sha).ConfigureAwait(false);
+                String path = createFolder(commit.Owner, commit.RepoName, file.Name, commit.Order.ToString(), commit.CreatedAt);
 
+                using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(path))
+                {
+                    streamWriter.WriteLine(file.HtmlUrl + "\r\n" + commit.Sha + " " + commit.CreatedAt + "\r\n");
+                    streamWriter.Write(file.Content);
+
+                }
+            }
+            catch (NotFoundException)
+            {
+                return;
             }
         }
 

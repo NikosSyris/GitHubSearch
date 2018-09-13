@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using GitHub_Tool.Model;
 using GitHub_Tool.Action;
+using System.Collections;
+using System.Linq;
 
 namespace GitHub_Tool.GUI
 {
@@ -20,10 +22,14 @@ namespace GitHub_Tool.GUI
 
         private void checkAllCommits(object sender, RoutedEventArgs e)     //doesn't work for some reason
         {
+            //var firstCol = CommitsDataGrid.Columns.OfType<DataGridCheckBoxColumn>().FirstOrDefault(c => c.DisplayIndex == 0);
             foreach (Commit commit in CommitsDataGrid.ItemsSource)
             {
-                commit.IsSelected = true;
+                //commit.IsSelected = true;
+                //var chBx = firstCol.GetCellContent(commit) as CheckBox;
+                //chBx.IsChecked = chkSelectAll.IsChecked;
             }
+            //var itemsSource = CommitsDataGrid.ItemsSource as IEnumerable;
         }
 
         private void uncheckAllCommits(object sender, RoutedEventArgs e)    //doesn't work for some reason
@@ -38,7 +44,8 @@ namespace GitHub_Tool.GUI
 
         private void downloadButtonClick(object sender, RoutedEventArgs e)    
         {
-          
+            downloadTextBlock.Visibility = Visibility.Hidden;
+
             foreach (Commit commit in CommitsDataGrid.ItemsSource)
             {
                 if (commit.IsSelected == true)
@@ -46,6 +53,8 @@ namespace GitHub_Tool.GUI
                     download.downloadContent(commit); 
                 }
             }
+
+            downloadTextBlock.Visibility = Visibility.Visible;
         }
 
         private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)

@@ -4,8 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitHub_Tool"
+             xmlns:local1="clr-namespace:GitHub_Tool.Action"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    
+    
+    
+    <UserControl.Resources>
+        <ControlTemplate x:Key="validationErrorTemplate">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Grid Width="12" Height="12">
+                        <Ellipse Width="12" Height="12" Fill="Red" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             
+                             ></Ellipse>
+                        <TextBlock Foreground="White" FontWeight="Heavy" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                               ToolTip="{Binding ElementName=ErrorAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                               >X</TextBlock>
+                    </Grid>
+                    <TextBlock Foreground="Red" FontWeight="Black" Margin="2,0,0,0" 
+                           Text="{Binding ElementName=ErrorAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                           ></TextBlock>
+                </StackPanel>
+                <AdornedElementPlaceholder x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
+            </DockPanel>
+        </ControlTemplate>
+    </UserControl.Resources>
+    
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
@@ -13,27 +38,113 @@
             <Button Content="Search" Click="searchReposButtonClick"/>
         </WrapPanel>
         <WrapPanel Margin="10">
+            <Label  Content="term"/>
+            <TextBox Name="termTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Term">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <CheckBox Name="ReadmeIncludedCheckBox" Margin="50,5,0,0">
+                <TextBlock Text="Include search in the readme file(repository name and description included by default)"/>
+            </CheckBox>
+        </WrapPanel>
+        <WrapPanel Margin="10">
             <Label  Content="Owner name"/>
-            <TextBox Name="ownerTextBox" Text="NikosSyris"/>
+            <TextBox Name="ownerTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Owner">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Stars"/>
-            <TextBox Name="starsTextBox" Text="0"/>
+            <TextBox Name="starsTextBox"  MinWidth="40"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Stars">
+                        <Binding.ValidationRules>
+                            <local1:IntegerValidator></local1:IntegerValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
-            <Label  Content="Size"/>
-            <TextBox Name="sizeTextBox" Text="0"/>
+            <Label  Content="Forks"/>
+            <TextBox Name="forksTextBox"  MinWidth="40"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Stars">
+                        <Binding.ValidationRules>
+                            <local1:IntegerValidator></local1:IntegerValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Size(KB)"/>
+            <TextBox Name="sizeTextBox"  MinWidth="40"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Stars">
+                        <Binding.ValidationRules>
+                            <local1:IntegerValidator></local1:IntegerValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Sort by"/>
+            <ComboBox Name="sortComboBox">
+                <ComboBoxItem>Stars</ComboBoxItem>
+                <ComboBoxItem>Forks</ComboBoxItem>
+                <ComboBoxItem>Updated</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">Best match</ComboBoxItem>
+            </ComboBox>
+            <Label  Content="Sort direction"/>
+            <ComboBox Name="orderComboBox">
+                <ComboBoxItem IsSelected="True">Descending</ComboBoxItem>
+                <ComboBoxItem>Ascending</ComboBoxItem>
+            </ComboBox>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <ComboBox Name="dateComboBox">
+                <ComboBoxItem IsSelected="True">Created after</ComboBoxItem>
+                <ComboBoxItem>Created before</ComboBoxItem>
+                <ComboBoxItem>Created between</ComboBoxItem>
+            </ComboBox>
+            <DatePicker Height="25" HorizontalAlignment="Left" Margin="42,0,0,0" Name="datePicker" VerticalAlignment="Top" Width="115" />
+            <DatePicker Height="25" HorizontalAlignment="Left" Margin="42,0,0,0" Name="endDatePicker" VerticalAlignment="Top" Width="115" />
+            <Label  Content="(Only use the second date Picker if you've chosen the 'Created between' option )" Margin="15,0,0,0"/>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Updated"/>
+            <DatePicker Height="25" HorizontalAlignment="Left" Margin="82,0,0,0" Name="updateDate" VerticalAlignment="Top" Width="115" />
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Languge"/>
+            <ComboBox Name="languageComboBox" Width="115" Height="30" Margin="82,0,0,0">
+            </ComboBox>
         </WrapPanel>
 
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
               Name="reposDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="Name" Binding="{Binding Name}" Header="Name" MinWidth="80" IsReadOnly="True" />
-                <DataGridTextColumn x:Name="Owner" Binding="{Binding Owner}" Header="Owner" MinWidth="80" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="Size" Binding="{Binding Size}" Header="Size" MinWidth="50" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="CreatedAt" Binding="{Binding CreatedAt}" Header="CreatedAt" MinWidth="170" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="UpdatedAt" Binding="{Binding UpdatedAt}" Header="UpdatedAt" MinWidth="170" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="StargazersCount" Binding="{Binding StargazersCount}" Header="StargazersCount" MinWidth="50" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="name" Binding="{Binding Name}" Header="Name" MinWidth="80" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="owner" Binding="{Binding Owner}" Header="Owner" MinWidth="80" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="size" Binding="{Binding Size}" Header="Size(KB)" MinWidth="50" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="language" Binding="{Binding Language}" Header="Language" MinWidth="50" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="createdAt" Binding="{Binding CreatedAt}" Header="CreatedAt" MinWidth="170" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="updatedAt" Binding="{Binding UpdatedAt}" Header="UpdatedAt" MinWidth="170" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="stargazersCount" Binding="{Binding StargazersCount}" Header="StargazersCount" MinWidth="50" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="forksCount" Binding="{Binding ForksCount}" Header="ForksCount" MinWidth="50" IsReadOnly="True"  />
                 <DataGridHyperlinkColumn Header="Url" Binding="{Binding HtmlUrl}">
                     <DataGridHyperlinkColumn.ElementStyle>
                         <Style>
@@ -51,5 +162,6 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Label Name="noResultsLabel"  Content="No Results" Visibility= "Hidden" HorizontalAlignment="Center" FontSize="18" FontStyle="Italic" Margin="0,30,0,0"/>
     </StackPanel>
 </UserControl>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GitHub_Tool"
         mc:Ignorable="d"
         Title="CommitWindow" Height="450" Width="800">
-    
+
     <StackPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
                   Name="CommitsDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
@@ -22,6 +22,7 @@
         </DataGrid>
 
         <Button Content="Download" x:Name="downloadButton" Click="downloadButtonClick"/>
-    </StackPanel>
+        <TextBlock Text="Download Complete" x:Name="downloadTextBlock" Visibility="Hidden" FontSize="16" HorizontalAlignment="Center" Margin="0,15,0,0"/>
 
+    </StackPanel>
 </Window>
