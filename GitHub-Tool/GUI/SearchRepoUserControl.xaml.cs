@@ -51,7 +51,8 @@ namespace GitHub_Tool.GUI
                 SearchRepositoriesRequestParameters requestParameters = new SearchRepositoriesRequestParameters(termTextBox.Text, ownerTextBox.Text, Int32.Parse(starsTextBox.Text)
                                                                             ,Int32.Parse(forksTextBox.Text), Int32.Parse(sizeTextBox.Text), sortComboBox.Text, orderComboBox.Text,
                                                                             datePicker.SelectedDate, dateComboBox.Text, updateDate.SelectedDate, languageComboBox.Text,
-                                                                            endDatePicker.SelectedDate, ReadmeIncludedCheckBox.IsChecked);
+                                                                            endDatePicker.SelectedDate, ReadmeIncludedCheckBox.IsChecked, starsComboBox.Text, forksComboBox.Text,
+                                                                            sizeComboBox.Text);
                 try
                 {
                     var result = await repoSearch.searchRepos(requestParameters);

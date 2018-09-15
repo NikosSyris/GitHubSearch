@@ -14,23 +14,47 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
-            <TextBox Name="term" Text=" createGithubClient()"/>
+            <TextBox Name="termTextBox" Text=" createGithubClient()"/>
+            <CheckBox Name="pathIncludedCheckBox" Margin="50,5,0,0">
+                <TextBlock Text="Include search in the file path(file contents are searched by default)"/>
+            </CheckBox>
         </WrapPanel>
         <WrapPanel Margin="10">
-            <Label  Content="Minimum number of commits"/>
-            <TextBox Name="minNumberOfCommits" Text="1"/>
+            <Label  Content="Owner"/>
+            <TextBox Name="ownerTextBox" Text="NikosSyris"/>
         </WrapPanel>
         <WrapPanel Margin="10">
-            <Label  Content="User Name"/>
-            <TextBox Name="name" Text="NikosSyris"/>
+            <Label  Content="File name"/>
+            <TextBox Name="fileNameTextBox" Text="" MinWidth="40" />
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Path"/>
+            <TextBox Name="pathTextBox" Text="" MinWidth="40" />
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Extension"/>
-            <TextBox Name="Extension" Text="cs"/>
+            <TextBox Name="extensionTextBox" Text="cs" MinWidth="40" />
         </WrapPanel>
         <WrapPanel Margin="10">
-            <Label  Content="size"/>
-            <TextBox Name="size" Text="0"/>
+            <Label  Content="Include forks"/>
+            <ComboBox Name="forkComboBox">
+                <ComboBoxItem>Yes</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">No</ComboBoxItem>
+            </ComboBox>
+            <TextBlock Text="Repository forks will not be searchable unless the fork has more stars than the parent repository." Margin="5,5,0,0"/>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="size(bytes)"/>
+            <ComboBox Name="sizeComboBox" Margin="15,0,0,0">
+                <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
+                <ComboBoxItem>Less than</ComboBoxItem>
+            </ComboBox>
+            <TextBox Name="sizeTextBox" Text="0" Margin="15,0,0,0" MinWidth="40"/>
+        </WrapPanel>
+        <WrapPanel Margin="10">
+            <Label  Content="Languge"/>
+            <ComboBox Name="languageComboBox" Width="115" Height="30" Margin="82,0,0,0">
+            </ComboBox>
         </WrapPanel>
 
         <TextBox Name="numberOfResults" Text=""/>
@@ -41,10 +65,10 @@
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
               Name="filesDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell" >
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="Owner" Binding="{Binding Owner}" Header="Owner" MinWidth="20" IsReadOnly="True" />
-                <DataGridTextColumn x:Name="RepoName" Binding="{Binding RepoName}" Header="RepoName" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="Path" Binding="{Binding Path}" Header="Path" MinWidth="250" IsReadOnly="True"  />
-                <DataGridTextColumn x:Name="NumberOfCommits" Binding="{Binding AllCommits.Count}" Header="NumberOfCommits" MinWidth="250" IsReadOnly="True"  />
+                <DataGridTextColumn x:Name="name" Binding="{Binding Name}" Header="Name" MinWidth="20" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="owner" Binding="{Binding Owner}" Header="Owner" MinWidth="20" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="repoName" Binding="{Binding RepoName}" Header="RepoName" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="path" Binding="{Binding Path}" Header="Path" MinWidth="250" IsReadOnly="True"/>
                 <DataGridHyperlinkColumn Header="Url" Binding="{Binding HtmlUrl}">
                     <DataGridHyperlinkColumn.ElementStyle>
                         <Style>
@@ -61,8 +85,8 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        
 
+        <Label Name="noResultsLabel"  Content="No Results" Visibility= "Hidden" HorizontalAlignment="Center" FontSize="18" FontStyle="Italic" Margin="0,30,0,0"/>
     </StackPanel>
 </UserControl>
 

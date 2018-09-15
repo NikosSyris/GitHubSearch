@@ -15,6 +15,9 @@ namespace GitHub_Tool.Model
         public string Order { get; set; }
         public string DateChoice { get; set; }
         public string Language { get; set; }
+        public string StarsChoice { get; set; }
+        public string ForksChoice { get; set; }
+        public string SizeChoice { get; set; }
         public int Stars { get; set; }
         public int Forks { get; set; }
         public int Size { get; set; }
@@ -25,7 +28,7 @@ namespace GitHub_Tool.Model
 
         public SearchRepositoriesRequestParameters(string term, string owner, int stars, int forks, int size, string sortBy, string order,
                                                    DateTime? date, string dateChoice, DateTime? updatedAt, string language, DateTime? endDate,
-                                                   bool? readmeIncluded)
+                                                   bool? readmeIncluded, string starsChoice, string forksChoice, string sizeChoice)
         {
             Term = term;
             Owner = owner;
@@ -40,6 +43,9 @@ namespace GitHub_Tool.Model
             UpdatedAt = updatedAt;
             Language = language;
             ReadmeIncluded = readmeIncluded;
+            StarsChoice = starsChoice;
+            ForksChoice = forksChoice;
+            SizeChoice = sizeChoice;
         }
     }
 }

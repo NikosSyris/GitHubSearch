@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GitHub_Tool.Model;
 using Model = GitHub_Tool.Model;
-using System.Diagnostics;
 using System.Linq;
 
 namespace GitHub_Tool.Action
@@ -18,9 +17,9 @@ namespace GitHub_Tool.Action
             var repoRequest = getSearchRepoRequest(requestParameters);
             var numberOfPages = 3;
             
-            for (int i = 0; i < numberOfPages; i++)
+            for (int i = 1; i <= numberOfPages; i++)
             {
-                repoRequest.Page += 1;
+                repoRequest.Page = i;
                 var result = await GlobalVariables.client.Search.SearchRepo(repoRequest);
 
                 repos.AddRange(result.Items.Select(repo => new Model.Repository
@@ -56,96 +55,106 @@ namespace GitHub_Tool.Action
                 repoRequest = new SearchRepositoriesRequest();      
             }
 
-            repoRequest.Page = 0;
-            repoRequest.Forks = Range.GreaterThanOrEquals(parameters.Forks);
-            repoRequest.Stars = Range.GreaterThanOrEquals(parameters.Stars);
-            repoRequest.Size = Range.GreaterThan(parameters.Size);
-            repoRequest.SortField = getSortBy(parameters.SortBy);
-
             Language language = (Language)Enum.Parse(typeof(Language), parameters.Language);
+
+            repoRequest.Forks = pickRange(parameters.ForksChoice, parameters.Forks);
+            repoRequest.Stars = pickRange(parameters.StarsChoice, parameters.Stars); 
+            repoRequest.Size =  pickRange(parameters.SizeChoice, parameters.Size);
+            repoRequest.SortField = getSortBy(parameters.SortBy);       
             repoRequest.Language = language;
-
-            if (parameters.ReadmeIncluded == true && parameters.Term != null)
-            {
-                repoRequest.In = new[] { InQualifier.Readme, InQualifier.Description, InQualifier.Name };
-            }
-
-            if (parameters.Owner != null)
-            {
-                repoRequest.User = parameters.Owner;
-            }
- 
-            if (parameters.Order == "Ascending")
-            {
-                repoRequest.Order = SortDirection.Ascending;
-            }
-
-            if (parameters.Date.HasValue )
-            {                
-                repoRequest.Created =  checkDateChoice(parameters);
-            }
-
-            if (parameters.UpdatedAt.HasValue)
-            {
-                repoRequest.Updated = DateRange.GreaterThanOrEquals(parameters.UpdatedAt.Value);
-            }
+            repoRequest.User = parameters.Owner;
+            repoRequest.Order = getSortDirection(parameters.Order);
+            repoRequest.Created = getCreatedAtParameter(parameters.DateChoice, parameters.Date, parameters.EndDate);
+            repoRequest.In = getInParameters(parameters.ReadmeIncluded, parameters.Term);
+            repoRequest.Updated = getUpdatedAtParameter(parameters.UpdatedAt);
 
             return repoRequest;
         }
 
 
-        private DateRange checkDateChoice(SearchRepositoriesRequestParameters parameters)
+        private Range pickRange(string choice, int value)
         {
-            DateRange dateRange;
 
-            if (parameters.DateChoice.Equals("Created after"))
+            if (choice.Equals("More than"))
             {
-                dateRange = DateRange.GreaterThanOrEquals(parameters.Date.Value);
+                return Range.GreaterThanOrEquals(value);
             }
-            else if (parameters.DateChoice.Equals("Created before"))
+
+            return Range.LessThanOrEquals(value);
+        }
+
+
+        private InQualifier[] getInParameters(bool? readmeIncluded, string term)
+        {
+            if (readmeIncluded == true && term != null)
             {
-                dateRange = DateRange.LessThanOrEquals(parameters.Date.Value);
+                return new[] { InQualifier.Readme, InQualifier.Description, InQualifier.Name };
+            }
+            return new[] { InQualifier.Description, InQualifier.Name };
+        }
+
+
+        private SortDirection getSortDirection(string choice)
+        {
+            if ( choice.Equals("Ascending") )
+            {
+                return SortDirection.Ascending;
+            }
+            return SortDirection.Descending;
+        }
+
+        private DateRange getUpdatedAtParameter(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return null;
+            }
+
+            return DateRange.GreaterThanOrEquals(date.Value);
+        }
+
+
+        private DateRange getCreatedAtParameter(string dateChoice, DateTime? startDate, DateTime? endDate)
+        {
+            
+            if ( !startDate.HasValue )
+            {
+                return null;
+            }
+
+            if (dateChoice.Equals("Created after"))
+            {
+                return DateRange.GreaterThanOrEquals(startDate.Value);
+            }
+            else if (dateChoice.Equals("Created before"))
+            {
+                return DateRange.LessThanOrEquals(startDate.Value);
             }
             else
             {
-                if (parameters.EndDate.HasValue)
+                if (endDate.HasValue)
                 {
-                    dateRange = DateRange.Between(parameters.Date.Value, parameters.EndDate.Value);
-                }
-                else
-                {
-                    dateRange = DateRange.GreaterThanOrEquals(parameters.Date.Value);
+                    return DateRange.Between(startDate.Value, endDate.Value);
                 }
 
-            }
-
-            return dateRange;
+                return DateRange.GreaterThanOrEquals(startDate.Value);
+            }               
         }
 
 
         private RepoSearchSort getSortBy(string sortBy)
         {
-            RepoSearchSort repoSearchSort;
-
             switch (sortBy)
             {
                 case "Stars":
-                    repoSearchSort = RepoSearchSort.Stars;
-                    break;
+                    return RepoSearchSort.Stars;
                 case "Forks":
-                    repoSearchSort = RepoSearchSort.Forks;
-                    break;
+                    return RepoSearchSort.Forks;
                 case "Updated":
-                    repoSearchSort = RepoSearchSort.Updated;
-                    break;
+                    return RepoSearchSort.Updated;
                 default:
-                    repoSearchSort = new RepoSearchSort();
-                    break;
+                    return new RepoSearchSort();
             }
-
-            return repoSearchSort;
         }
-
-
     }
 }

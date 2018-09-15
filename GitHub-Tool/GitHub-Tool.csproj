@@ -91,6 +91,7 @@
     <Compile Include="Model\Folder.cs" />
     <Compile Include="Model\GlobalVariables.cs" />
     <Compile Include="Model\Repository.cs" />
+    <Compile Include="Model\SearchCodeRequestParameters.cs" />
     <Compile Include="Model\SearchRepositoriesRequestParameters.cs" />
     <Compile Include="Action\StringValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

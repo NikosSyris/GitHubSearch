@@ -38,7 +38,7 @@
             <Button Content="Search" Click="searchReposButtonClick"/>
         </WrapPanel>
         <WrapPanel Margin="10">
-            <Label  Content="term"/>
+            <Label  Content="Search term"/>
             <TextBox Name="termTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Term">
@@ -66,7 +66,11 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Stars"/>
-            <TextBox Name="starsTextBox"  MinWidth="40"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <ComboBox Name="starsComboBox" Margin="5,0,0,0">
+                <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
+                <ComboBoxItem>Less than</ComboBoxItem>
+            </ComboBox>
+            <TextBox Name="starsTextBox"  MinWidth="40" Margin="10,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Stars">
                         <Binding.ValidationRules>
@@ -78,7 +82,11 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Forks"/>
-            <TextBox Name="forksTextBox"  MinWidth="40"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <ComboBox Name="forksComboBox" Margin="5,0,0,0">
+                <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
+                <ComboBoxItem>Less than</ComboBoxItem>
+            </ComboBox>
+            <TextBox Name="forksTextBox"  MinWidth="40" Margin="10,0,0,0"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Stars">
                         <Binding.ValidationRules>
@@ -90,7 +98,11 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Size(KB)"/>
-            <TextBox Name="sizeTextBox"  MinWidth="40"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <ComboBox Name="sizeComboBox" Margin="5,0,0,0">
+                <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
+                <ComboBoxItem>Less than</ComboBoxItem>
+            </ComboBox>
+            <TextBox Name="sizeTextBox"  MinWidth="40" Margin="10,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Stars">
                         <Binding.ValidationRules>

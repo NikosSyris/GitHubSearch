@@ -5,68 +5,99 @@ using System.Linq;
 using System.Threading.Tasks;
 using GitHub_Tool.Model;
 using Model = GitHub_Tool.Model;
-
+using System.Diagnostics;
 
 namespace GitHub_Tool.Action
 {
     class CodeSearch
     {
 
-        public async Task<List<File>> searchCode(String term, int minNumberOfCommits, String extension, String name, int size) 
+        public async Task<List<File>> searchCode(Model.SearchCodeRequestParameters requestParameters) 
         {
 
-            List<File> files = new List<File>();
+            List<File> files = new List<File>();       
+            var codeRequest = getSearchCodeRequest(requestParameters);         
+            var numberOfPages = 3;
 
-            var codeRequest = getSearchCodeRequest(term, extension, name,size);  
-            var result = await GlobalVariables.client.Search.SearchCode(codeRequest).ConfigureAwait(false);
-            var numberOfResults = result.TotalCount;
-            var parsedSoFar = 0;
-
-            for (var i = 0; i < codeRequest.PerPage; i++)       
+            for (int i = 1; i <= numberOfPages; i++)
             {
-                var tempFile = result.Items.ElementAt(i);
-                var owner = tempFile.Repository.Owner.Login;
-                var repoName = tempFile.Repository.Name;
+                codeRequest.Page = i;
+                var result = await GlobalVariables.client.Search.SearchCode(codeRequest).ConfigureAwait(false);
 
-                List<Model.Commit> commitList = await getCommitsForFIle(owner, repoName, tempFile.Path).ConfigureAwait(false);
-
-                if (commitList.Count >= minNumberOfCommits)    
+                files.AddRange(result.Items.Select(file => new Model.File
                 {
-                    files.Add(new File(tempFile.Name, owner, repoName, tempFile.Path, tempFile.HtmlUrl, commitList));
-                }
-                parsedSoFar++;
-
-                if (parsedSoFar == numberOfResults)
-                {
-                    break;
-                }
+                    Name = file.Name,
+                    Path = file.Path,
+                    RepoName = file.Repository.Name,
+                    Owner = file.Repository.Owner.Login,
+                    HtmlUrl = file.HtmlUrl 
+                    
+                }).ToList());
             }
-            
 
             return files;
         }
 
 
-        private SearchCodeRequest getSearchCodeRequest(String term, String extension = null, String name = null, int size = 0)
+        private SearchCodeRequest getSearchCodeRequest(Model.SearchCodeRequestParameters parameters)
         {
-            var codeRequest = new SearchCodeRequest(term);
 
-            if (name != null)      
+            SearchCodeRequest codeRequest;
+
+            try
             {
-                codeRequest.User = name;
+                codeRequest = new SearchCodeRequest(parameters.Term);
+            }
+            catch (Exception)
+            {
+                codeRequest = new SearchCodeRequest();
             }
 
-            if (extension != null)   
-            {
-                codeRequest.Extension = extension;
-            }
+            Language language = (Language)Enum.Parse(typeof(Language), parameters.Language);
 
-            //if (size != 0)
-            //{
-            //    codeRequest.Size = Range.GreaterThanOrEquals(size);
-            //}
+            codeRequest.FileName = parameters.FileName;
+            codeRequest.Path = parameters.Path;
+            codeRequest.User = parameters.Owner;
+            codeRequest.Extension = parameters.Extension;
+            codeRequest.Language = language;
+            codeRequest.Size = pickRange(parameters.SizeChoice, parameters.Size);
+            codeRequest.Forks = getBoolParameter(parameters.ForksIncluded);
+            codeRequest.In = getPathIncludedParameter(parameters.PathIncluded, parameters.Term);
 
             return codeRequest;
+        }
+
+
+        private bool getBoolParameter(string parameter)
+        {
+            if (parameter.Equals("Yes"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private IEnumerable<CodeInQualifier> getPathIncludedParameter(bool? pathIncluded, string parameter)
+        {
+            if (pathIncluded == true && parameter != null)
+            {
+                return new[] { CodeInQualifier.File, CodeInQualifier.Path };
+            }
+
+            return new[] { CodeInQualifier.File };
+        }
+
+
+        private Range pickRange(string choice, int size)
+        {
+
+            if (choice.Equals("More than"))
+            {
+                return Range.GreaterThanOrEquals(size);
+            }
+
+            return Range.LessThanOrEquals(size);
         }
 
 
