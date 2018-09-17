@@ -45,6 +45,7 @@ namespace GitHub_Tool.GUI
         private void downloadButtonClick(object sender, RoutedEventArgs e)    
         {
             downloadTextBlock.Visibility = Visibility.Hidden;
+            downloadButton.IsEnabled = false;
 
             foreach (Commit commit in CommitsDataGrid.ItemsSource)
             {
@@ -54,6 +55,7 @@ namespace GitHub_Tool.GUI
                 }
             }
 
+            downloadButton.IsEnabled = true;
             downloadTextBlock.Visibility = Visibility.Visible;
         }
 

@@ -56,10 +56,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action\DateValidator.cs" />
+    <Compile Include="Action\Validation\DateValidator.cs" />
     <Compile Include="Action\Download.cs" />
     <Compile Include="Action\CodeSearch.cs" />
-    <Compile Include="Action\IntegerValidator.cs" />
+    <Compile Include="Action\Validation\IntegerValidator.cs" />
     <Compile Include="Action\RepoManager.cs" />
     <Compile Include="Action\RepoSearch.cs" />
     <Compile Include="App.xaml.cs">
@@ -67,9 +67,6 @@
     </Compile>
     <Compile Include="GUI\CommitWindow.xaml.cs">
       <DependentUpon>CommitWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ContentWindow.xaml.cs">
-      <DependentUpon>ContentWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -93,7 +90,7 @@
     <Compile Include="Model\Repository.cs" />
     <Compile Include="Model\SearchCodeRequestParameters.cs" />
     <Compile Include="Model\SearchRepositoriesRequestParameters.cs" />
-    <Compile Include="Action\StringValidator.cs" />
+    <Compile Include="Action\Validation\StringValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,10 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="GUI\CommitWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\ContentWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

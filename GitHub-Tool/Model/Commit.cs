@@ -16,7 +16,7 @@ namespace GitHub_Tool.Model
         private bool _IsSelected = false;
         public bool IsSelected { get { return _IsSelected; } set { _IsSelected = value; OnChanged("IsSelected"); } }
 
-        public Commit(string owner, string repoName, string filePath, string sha, DateTimeOffset createdAt, int order)  //, int size
+        public Commit(string owner, string repoName, string filePath, string sha, DateTimeOffset createdAt, int order)  
         {
             Owner = owner;
             RepoName = repoName;

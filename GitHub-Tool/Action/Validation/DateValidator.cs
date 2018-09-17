@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace GitHub_Tool.Action
+namespace GitHub_Tool.Action.Validation
 {
     class DateValidator
     {

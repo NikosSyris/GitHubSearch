@@ -8,6 +8,7 @@ using GitHub_Tool.Model;
 using Model = GitHub_Tool.Model;
 using Octokit;
 using System.ComponentModel;
+using GitHub_Tool.Action.Validation;
 
 namespace GitHub_Tool.GUI
 {
@@ -43,6 +44,7 @@ namespace GitHub_Tool.GUI
         {
             if ( isValid(termTextBox, ownerTextBox, starsTextBox, forksTextBox, sizeTextBox) ) 
             {
+                searchButton.IsEnabled = false;
                 GlobalVariables.accessToken = accessTokenTextBox.Text;
                 GlobalVariables.client = GlobalVariables.createGithubClient();
                 noResultsLabel.Visibility = Visibility.Hidden;
@@ -58,6 +60,7 @@ namespace GitHub_Tool.GUI
                     var result = await repoSearch.searchRepos(requestParameters);
                     noResultsLabel.Visibility = pickVisibility(result.Count);
                     reposDataGrid.ItemsSource = result;
+                    searchButton.IsEnabled = true;
                 }
                 catch (ApiValidationException exception)
                 {

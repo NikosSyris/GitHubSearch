@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using GitHub_Tool.Model;
 using Model = GitHub_Tool.Model;
-using System.Diagnostics;
 
 namespace GitHub_Tool.Action
 {
@@ -55,13 +54,13 @@ namespace GitHub_Tool.Action
 
             Language language = (Language)Enum.Parse(typeof(Language), parameters.Language);
 
-            codeRequest.FileName = parameters.FileName;
+            codeRequest.Language = language;
             codeRequest.Path = parameters.Path;
             codeRequest.User = parameters.Owner;
+            codeRequest.FileName = parameters.FileName;
             codeRequest.Extension = parameters.Extension;
-            codeRequest.Language = language;
-            codeRequest.Size = pickRange(parameters.SizeChoice, parameters.Size);
             codeRequest.Forks = getBoolParameter(parameters.ForksIncluded);
+            codeRequest.Size = pickRange(parameters.SizeChoice, parameters.Size);
             codeRequest.In = getPathIncludedParameter(parameters.PathIncluded, parameters.Term);
 
             return codeRequest;

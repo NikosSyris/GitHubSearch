@@ -57,17 +57,17 @@ namespace GitHub_Tool.Action
 
             Language language = (Language)Enum.Parse(typeof(Language), parameters.Language);
 
+            repoRequest.User = parameters.Owner;
+            repoRequest.Language = language;
+            repoRequest.SortField = getSortBy(parameters.SortBy);
+            repoRequest.Order = getSortDirection(parameters.Order);
             repoRequest.Forks = pickRange(parameters.ForksChoice, parameters.Forks);
             repoRequest.Stars = pickRange(parameters.StarsChoice, parameters.Stars); 
             repoRequest.Size =  pickRange(parameters.SizeChoice, parameters.Size);
-            repoRequest.SortField = getSortBy(parameters.SortBy);       
-            repoRequest.Language = language;
-            repoRequest.User = parameters.Owner;
-            repoRequest.Order = getSortDirection(parameters.Order);
-            repoRequest.Created = getCreatedAtParameter(parameters.DateChoice, parameters.Date, parameters.EndDate);
             repoRequest.In = getInParameters(parameters.ReadmeIncluded, parameters.Term);
+            repoRequest.Created = getCreatedAtParameter(parameters.DateChoice, parameters.Date, parameters.EndDate);
             repoRequest.Updated = getUpdatedAtParameter(parameters.UpdatedAt);
-
+            
             return repoRequest;
         }
 

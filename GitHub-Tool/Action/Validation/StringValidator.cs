@@ -1,12 +1,12 @@
 ﻿using System.Windows.Controls;
 
-namespace GitHub_Tool.Action
+namespace GitHub_Tool.Action.Validation
 {
     class StringValidator : ValidationRule
     {
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
         {
-            int maxLength = 150;
+            int maxLength = 400;
 
             if (value.ToString().Length > maxLength)
             {

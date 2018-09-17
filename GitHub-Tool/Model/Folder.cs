@@ -7,18 +7,15 @@ namespace GitHub_Tool.Model
     {
         public string Name { get; set; }
         public string Path { get; set; }
-        //public string HtmlUrl { get; set; }
         public List<File> FileList { get; set; }
         public List<Folder> FolderList { get; set; }
 
-        public Folder(string name, string path) //, string htmlUrl
+        public Folder(string name, string path) 
         {
             Name = name;
             Path = path;
             FileList = new List<File>();
             FolderList = new List<Folder>();
-            //HtmlUrl = htmlUrl;
-
         }
     }
 }

@@ -4,36 +4,78 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitHub_Tool"
+             xmlns:local1="clr-namespace:GitHub_Tool.Action.Validation"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text=""/>
-            <Button Content="Search" Click="searchCodeButtonClick"/>
+            <TextBox Name="accessTokenTextBox" Text="" MinWidth="270" />
+            <Button Name="searchRepos" Content="Search" Click="searchCodeButtonClick"/>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
-            <TextBox Name="termTextBox" Text=" createGithubClient()"/>
+            <TextBox Name="termTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Term">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
             <CheckBox Name="pathIncludedCheckBox" Margin="50,5,0,0">
                 <TextBlock Text="Include search in the file path(file contents are searched by default)"/>
             </CheckBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Owner"/>
-            <TextBox Name="ownerTextBox" Text="NikosSyris"/>
+            <TextBox Name="ownerTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Owner">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="File name"/>
-            <TextBox Name="fileNameTextBox" Text="" MinWidth="40" />
+            <TextBox Name="fileNameTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="FileName">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Path"/>
-            <TextBox Name="pathTextBox" Text="" MinWidth="40" />
+            <TextBox Name="pathTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Path">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Extension"/>
-            <TextBox Name="extensionTextBox" Text="cs" MinWidth="40" />
+            <TextBox Name="extensionTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Extension">
+                        <Binding.ValidationRules>
+                            <local1:StringValidator></local1:StringValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Include forks"/>
@@ -49,7 +91,15 @@
                 <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
                 <ComboBoxItem>Less than</ComboBoxItem>
             </ComboBox>
-            <TextBox Name="sizeTextBox" Text="0" Margin="15,0,0,0" MinWidth="40"/>
+            <TextBox Name="sizeTextBox"  MinWidth="40" Margin="10,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="Size">
+                        <Binding.ValidationRules>
+                            <local1:IntegerValidator></local1:IntegerValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Languge"/>
