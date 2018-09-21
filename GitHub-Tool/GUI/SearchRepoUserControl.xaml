@@ -11,8 +11,15 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="" MinWidth="270" />
-            <Button Name="searchButton" Content="Search" Click="searchReposButtonClick"/>
+            <TextBox Name="accessTokenTextBox"  MinWidth="270"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="AccessToken">
+                        <Binding.ValidationRules>
+                            <local1:AccessTokenValidator></local1:AccessTokenValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
@@ -122,6 +129,7 @@
             <ComboBox Name="languageComboBox" Width="115" Height="30" Margin="82,0,0,0">
             </ComboBox>
         </WrapPanel>
+        <Button Name="searchButton" Content="Search" Click="searchReposButtonClick"  Width="120" Margin="0,0,0,30"/>
 
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
               Name="reposDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">

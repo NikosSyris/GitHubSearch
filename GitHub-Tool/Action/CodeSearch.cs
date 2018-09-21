@@ -118,6 +118,7 @@ namespace GitHub_Tool.Action
         }
 
 
+        //na to valw sto download
         public async Task<RepositoryContent> getSpecificVersion(string owner, string repoName, string path, string sha)
         {
             var file = await GlobalVariables.client

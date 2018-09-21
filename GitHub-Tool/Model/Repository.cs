@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GitHub_Tool.Model
 {
-    class Repository
+    public class Repository
     {
         public string Name { get; set; }
         public string Owner { get; set; }

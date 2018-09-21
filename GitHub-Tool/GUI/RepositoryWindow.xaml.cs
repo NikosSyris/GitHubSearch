@@ -71,7 +71,7 @@ namespace GitHub_Tool.GUI
 
             this.Dispatcher.Invoke(() =>
             {
-                commitWindow.CommitsDataGrid.ItemsSource = commitList;
+                commitWindow.commitsDataGrid.ItemsSource = commitList;
                 commitWindow.Show();
             });
         }

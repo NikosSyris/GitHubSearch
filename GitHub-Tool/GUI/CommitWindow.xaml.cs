@@ -4,6 +4,8 @@ using GitHub_Tool.Model;
 using GitHub_Tool.Action;
 using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace GitHub_Tool.GUI
 {
@@ -17,27 +19,33 @@ namespace GitHub_Tool.GUI
         {
             InitializeComponent();
             download = new Download();
+            downloadDestinationTextBox.Text = download.DefaultDownloadDestination;
         }
 
 
         private void checkAllCommits(object sender, RoutedEventArgs e)     //doesn't work for some reason
         {
-            //var firstCol = CommitsDataGrid.Columns.OfType<DataGridCheckBoxColumn>().FirstOrDefault(c => c.DisplayIndex == 0);
-            foreach (Commit commit in CommitsDataGrid.ItemsSource)
-            {
-                //commit.IsSelected = true;
-                //var chBx = firstCol.GetCellContent(commit) as CheckBox;
-                //chBx.IsChecked = chkSelectAll.IsChecked;
-            }
-            //var itemsSource = CommitsDataGrid.ItemsSource as IEnumerable;
+            checkOrUncheck(true);
         }
 
         private void uncheckAllCommits(object sender, RoutedEventArgs e)    //doesn't work for some reason
         {
-            foreach (Commit commit in CommitsDataGrid.ItemsSource)
+            checkOrUncheck(false);
+        }
+
+
+        private void checkOrUncheck(bool value)
+        {
+            IEnumerable<Commit> commitList = commitsDataGrid.ItemsSource as IEnumerable<Model.Commit>;
+            if (commitList != null)
             {
-                commit.IsSelected = false;
+                foreach (var commit in commitList)
+                {
+                    commit.IsSelected = value;
+                }
+
             }
+            commitsDataGrid.Items.Refresh();
         }
 
 
@@ -47,25 +55,33 @@ namespace GitHub_Tool.GUI
             downloadTextBlock.Visibility = Visibility.Hidden;
             downloadButton.IsEnabled = false;
 
-            foreach (Commit commit in CommitsDataGrid.ItemsSource)
+            if (download.checkIfDirectoryExists(downloadDestinationTextBox.Text))
             {
-                if (commit.IsSelected == true)
+                foreach (Commit commit in commitsDataGrid.ItemsSource)
                 {
-                    download.downloadContent(commit); 
+                    if (commit.IsSelected == true)
+                    {
+                        download.downloadContent(commit, downloadDestinationTextBox.Text);
+                    }
                 }
+                
+                downloadTextBlock.Visibility = Visibility.Visible;
             }
-
+            else
+            {
+                MessageBox.Show("The directory doesn't exist or you don't have the right to access it",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
             downloadButton.IsEnabled = true;
-            downloadTextBlock.Visibility = Visibility.Visible;
         }
+
 
         private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)
         {
-
-            var currentCell = e.ClipboardRowContent[CommitsDataGrid.CurrentCell.Column.DisplayIndex];
+            var currentCell = e.ClipboardRowContent[commitsDataGrid.CurrentCell.Column.DisplayIndex];
             e.ClipboardRowContent.Clear();
             e.ClipboardRowContent.Add(currentCell);
-
         }
     }
 }

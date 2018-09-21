@@ -4,16 +4,16 @@ namespace GitHub_Tool.Model
 {
     class SearchCodeRequestParameters
     {
-        public string Term { get; set; }
-        public string Extension { get; set; }
-        public string Owner { get; set; }
-        public string ForksIncluded { get; set; }
-        public string FileName { get; set; }
-        public string Path { get; set; }
-        public string SizeChoice { get; set; }
-        public int Size { get; set; }
-        public string Language { get; set; }
-        public bool? PathIncluded { get; set; }
+        public string Term { get; }
+        public string Extension { get; }
+        public string Owner { get; }
+        public string ForksIncluded { get; }
+        public string FileName { get; }
+        public string Path { get; }
+        public string SizeChoice { get; }
+        public int Size { get; }
+        public string Language { get; }
+        public bool? PathIncluded { get; }
         
 
 

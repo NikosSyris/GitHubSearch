@@ -7,9 +7,10 @@
         mc:Ignorable="d"
         Title="CommitWindow" Height="450" Width="800">
 
+
     <StackPanel>
         <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
-                  Name="CommitsDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
+                  Name="commitsDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="Sha" Binding="{Binding Sha}" Header="Sha" MinWidth="20" IsReadOnly="True" />
                 <DataGridTextColumn x:Name="CreatedAt" Binding="{Binding CreatedAt}" Header="CreatedAt" MinWidth="20" IsReadOnly="True" />
@@ -20,7 +21,10 @@
                 </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
-
+        <WrapPanel HorizontalAlignment="Center" Margin="0,30,0,0">
+            <Label Content="Download destination" />
+            <TextBox Name="downloadDestinationTextBox"  Margin="10,0,0,0"/>
+        </WrapPanel>
         <Button Content="Download" x:Name="downloadButton" Click="downloadButtonClick"/>
         <TextBlock Text="Download Complete" x:Name="downloadTextBlock" Visibility="Hidden" FontSize="16" HorizontalAlignment="Center" Margin="0,15,0,0"/>
 

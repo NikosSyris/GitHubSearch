@@ -6,13 +6,12 @@ namespace GitHub_Tool.Model
     public class Commit
     {
 
-        public string Owner { get; set; }
-        public string RepoName { get; set; }
-        public string FilePath { get; set; }
-        public string Sha { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public int Size { get; set; }
-        public int Order { get; set; }
+        public string Owner { get; }
+        public string RepoName { get; }
+        public string FilePath { get; }
+        public string Sha { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public int Order { get; }
         private bool _IsSelected = false;
         public bool IsSelected { get { return _IsSelected; } set { _IsSelected = value; OnChanged("IsSelected"); } }
 

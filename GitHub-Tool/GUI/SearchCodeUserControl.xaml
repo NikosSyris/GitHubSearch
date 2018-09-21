@@ -10,8 +10,15 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox" Text="" MinWidth="270" />
-            <Button Name="searchRepos" Content="Search" Click="searchCodeButtonClick"/>
+            <TextBox Name="accessTokenTextBox"  MinWidth="270"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+                <TextBox.Text>
+                    <Binding Path="AccessToken">
+                        <Binding.ValidationRules>
+                            <local1:AccessTokenValidator></local1:AccessTokenValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
@@ -107,7 +114,8 @@
             </ComboBox>
         </WrapPanel>
 
-        <TextBox Name="numberOfResults" Text=""/>
+        <TextBox Name="numberOfResults" Text="" Visibility="Hidden"/>  <!--for now-->
+        <Button Name="searchButton" Content="Search" Click="searchCodeButtonClick" Width="120" Margin="0,0,0,30"/>
 
 
 

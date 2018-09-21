@@ -7,25 +7,49 @@
         mc:Ignorable="d"
         Title="RepositoryWindow" Height="450" Width="800">
     <ScrollViewer>
-        <StackPanel>
+        <StackPanel Background="Beige">
 
+                
             <Label  Content="Repo Structure" HorizontalAlignment="Center" FontSize="16"/>
-
             <TreeView
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 MinHeight="400"
                 MinWidth="800" 
                 MaxHeight="400"
-                Margin="10,10,0,0" 
+                Margin="0,0,0,30" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.HorizontalScrollBarVisibility= "Visible" 
                 Loaded="loadTreeView" 
                 Background="White"/>
+               
+               
+            <Label  Content="Repo Info" HorizontalAlignment="Center" FontSize="16"/>
+            <DataGrid Name="test" Margin="0,0,0,30">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="name" Binding="{Binding Name}" Header="Name" MinWidth="80" IsReadOnly="True" />
+                    <DataGridTextColumn x:Name="owner" Binding="{Binding Owner}" Header="Owner" MinWidth="80" IsReadOnly="True"  />
+                    <DataGridTextColumn x:Name="size" Binding="{Binding Size}" Header="Size(KB)" MinWidth="50" IsReadOnly="True"  />
+                    <DataGridTextColumn x:Name="language" Binding="{Binding Language}" Header="Language" MinWidth="50" IsReadOnly="True"  />
+                    <DataGridTextColumn x:Name="createdAt" Binding="{Binding CreatedAt}" Header="CreatedAt" MinWidth="170" IsReadOnly="True"  />
+                    <DataGridTextColumn x:Name="updatedAt" Binding="{Binding UpdatedAt}" Header="UpdatedAt" MinWidth="170" IsReadOnly="True"  />
+                    <DataGridTextColumn x:Name="stargazersCount" Binding="{Binding StargazersCount}" Header="StargazersCount" MinWidth="50" IsReadOnly="True"  />
+                    <DataGridTextColumn x:Name="forksCount" Binding="{Binding ForksCount}" Header="ForksCount" MinWidth="50" IsReadOnly="True"  />
+                    <DataGridHyperlinkColumn Header="Url" Binding="{Binding HtmlUrl}">
+                        <DataGridHyperlinkColumn.ElementStyle>
+                            <Style>
+                                <EventSetter Event="Hyperlink.Click" Handler="HyperlinkOnClick" />
+                            </Style>
+                        </DataGridHyperlinkColumn.ElementStyle>
+                    </DataGridHyperlinkColumn>
+                    <DataGridTextColumn x:Name="Description" Binding="{Binding Description}" Header="Description" MinWidth="100" IsReadOnly="True" Width="*"  />
+                </DataGrid.Columns>
 
+            </DataGrid>
+               
+        
 
             <Label  Content="Repo files" HorizontalAlignment="Center" FontSize="16"/>
-
             <DataGrid AutoGenerateColumns="False" CanUserAddRows="False"  Grid.RowSpan="2"  IsReadOnly="False" 
                   Name="filesDataGrid" TabIndex="7" VerticalAlignment="Top"  Grid.Row="1" SelectionUnit="Cell">
                 <DataGrid.Columns>
@@ -47,11 +71,6 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-
-
-
-
-
 
         </StackPanel>
     </ScrollViewer>

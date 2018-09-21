@@ -5,8 +5,8 @@ namespace GitHub_Tool.Model
 {
     public class Folder
     {
-        public string Name { get; set; }
-        public string Path { get; set; }
+        public string Name { get; }
+        public string Path { get; }
         public List<File> FileList { get; set; }
         public List<Folder> FolderList { get; set; }
 

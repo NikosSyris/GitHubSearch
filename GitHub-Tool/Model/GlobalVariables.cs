@@ -36,9 +36,5 @@ namespace GitHub_Tool.Model
             Debug.WriteLine(howManyRequestsDoIHaveLeft);
             Debug.WriteLine(whenDoesTheLimitReset);
         }
-
     }
-
-
-
 }

@@ -9,22 +9,22 @@ namespace GitHub_Tool.Model
 {
     class SearchRepositoriesRequestParameters
     {
-        public string Term { get; set; }
-        public string Owner { get; set; }
-        public string SortBy { get; set; }
-        public string Order { get; set; }
-        public string DateChoice { get; set; }
-        public string Language { get; set; }
-        public string StarsChoice { get; set; }
-        public string ForksChoice { get; set; }
-        public string SizeChoice { get; set; }
-        public int Stars { get; set; }
-        public int Forks { get; set; }
-        public int Size { get; set; }
-        public DateTime? Date { get; set; }
-        public DateTime? EndDate { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public bool? ReadmeIncluded { get; set; }
+        public string Term { get; }
+        public string Owner { get; }
+        public string SortBy { get; }
+        public string Order { get; }
+        public string DateChoice { get; }
+        public string Language { get; }
+        public string StarsChoice { get; }
+        public string ForksChoice { get; }
+        public string SizeChoice { get; }
+        public int Stars { get; }
+        public int Forks { get; }
+        public int Size { get; }
+        public DateTime? Date { get; }
+        public DateTime? EndDate { get; }
+        public DateTime? UpdatedAt { get; }
+        public bool? ReadmeIncluded { get; }
 
         public SearchRepositoriesRequestParameters(string term, string owner, int stars, int forks, int size, string sortBy, string order,
                                                    DateTime? date, string dateChoice, DateTime? updatedAt, string language, DateTime? endDate,

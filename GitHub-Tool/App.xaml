@@ -23,7 +23,12 @@
                 <AdornedElementPlaceholder x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
             </DockPanel>
         </ControlTemplate>
+
+
         
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#FF4169AA" />
+        <SolidColorBrush x:Key="PrimaryFont" Color="White" />
+
     </Application.Resources>
 </Application>
 
