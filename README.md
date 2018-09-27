@@ -1,1 +1,1 @@
-# GitHub-Tool
+# GitHub-Search
