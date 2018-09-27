@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHub-Tool", "GitHub-Tool\GitHub-Tool.csproj", "{0495C850-84E6-4492-A57E-721F27C55E7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubSearch", "GitHub-Tool\GitHubSearch.csproj", "{0495C850-84E6-4492-A57E-721F27C55E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

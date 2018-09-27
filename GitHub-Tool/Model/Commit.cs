@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace GitHub_Tool.Model
+namespace GitHubSearch.Model
 {
     public class Commit
     {

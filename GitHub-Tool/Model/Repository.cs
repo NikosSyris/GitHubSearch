@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GitHub_Tool.Model
+namespace GitHubSearch.Model
 {
     public class Repository
     {

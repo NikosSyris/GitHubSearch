@@ -1,13 +1,8 @@
-﻿using Octokit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace GitHub_Tool.Model
+namespace GitHubSearch.Model
 {
-    class SearchRepositoriesRequestParameters
+    public class SearchRepositoriesRequestParameters : RequestParameters
     {
         public string Term { get; }
         public string Owner { get; }

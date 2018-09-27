@@ -58,19 +58,25 @@
   <ItemGroup>
     <Compile Include="Action\Validation\AccessTokenValidator.cs" />
     <Compile Include="Action\Validation\DateValidator.cs" />
-    <Compile Include="Action\Download.cs" />
-    <Compile Include="Action\CodeSearch.cs" />
+    <Compile Include="Action\DownloadLocallyManager.cs" />
+    <Compile Include="Action\CodeSearchManager.cs" />
     <Compile Include="Action\Validation\IntegerValidator.cs" />
     <Compile Include="Action\RepoManager.cs" />
-    <Compile Include="Action\RepoSearch.cs" />
+    <Compile Include="Action\RepoSearchManager.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\CommitWindow.xaml.cs">
       <DependentUpon>CommitWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\DownloadResultsWindow.xaml.cs">
+      <DependentUpon>DownloadResultsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PageDialog.xaml.cs">
+      <DependentUpon>PageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\RepositoryWindow.xaml.cs">
       <DependentUpon>RepositoryWindow.xaml</DependentUpon>
@@ -81,14 +87,12 @@
     <Compile Include="GUI\SearchRepoUserControl.xaml.cs">
       <DependentUpon>SearchRepoUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\test.xaml.cs">
-      <DependentUpon>test.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\File.cs" />
     <Compile Include="Model\Folder.cs" />
     <Compile Include="Model\GlobalVariables.cs" />
     <Compile Include="Model\Repository.cs" />
+    <Compile Include="Model\RequestParameters.cs" />
     <Compile Include="Model\SearchCodeRequestParameters.cs" />
     <Compile Include="Model\SearchRepositoriesRequestParameters.cs" />
     <Compile Include="Action\Validation\StringValidator.cs" />
@@ -114,9 +118,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\DownloadResultsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\PageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\RepositoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -127,10 +139,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\SearchRepoUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\test.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

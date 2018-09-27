@@ -1,8 +1,6 @@
-﻿using Octokit;
-
-namespace GitHub_Tool.Model
+﻿namespace GitHubSearch.Model
 {
-    class SearchCodeRequestParameters
+    public class SearchCodeRequestParameters : RequestParameters
     {
         public string Term { get; }
         public string Extension { get; }
@@ -15,8 +13,6 @@ namespace GitHub_Tool.Model
         public string Language { get; }
         public bool? PathIncluded { get; }
         
-
-
         public SearchCodeRequestParameters(string term, string extension, string owner, int size, string language,
                                            bool? pathIncluded, string forksIncluded, string fileName, string path,
                                            string sizeChoice)

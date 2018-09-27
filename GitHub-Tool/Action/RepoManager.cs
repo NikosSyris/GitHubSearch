@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Octokit;
-using GitHub_Tool.Model;
-using Model = GitHub_Tool.Model;
+using GitHubSearch.Model;
+using Model = GitHubSearch.Model;
 
-namespace GitHub_Tool.Action
+namespace GitHubSearch.Action
 {
     class RepoManager
     {

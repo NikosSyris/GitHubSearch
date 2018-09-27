@@ -1,0 +1,23 @@
+﻿<Window x:Class="GitHubSearch.GUI.PageDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GitHubSearch.GUI"
+        mc:Ignorable="d"
+        Title="PageDialog" Height="450" Width="800">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="150" >
+        <WrapPanel Margin="40,0,0,20">
+            <Label  Content="Number of pages:"/>
+            <TextBlock Name="pagesCountTextBlock"  Text=""  VerticalAlignment="Center" Margin="0,0,0,0"/>
+            <Label  Content="(100 items per page)"/>
+        </WrapPanel>
+        <WrapPanel Margin="0,15,0,0">
+            <Label  Content="Get pages from "/>
+            <ComboBox Name="firstPageComboBox"  Margin="15,0,0,0" Width="70"/>
+            <Label  Content="to" Margin="10,0,0,0"/>
+            <ComboBox Name="lastPageComboBox" Margin="15,0,0,0" Width="70"/>
+        </WrapPanel>
+        <Button x:Name="button" Content="Set Pages" Click="buttonClick" Width="120" Margin="0,20,0,0"/>
+    </StackPanel>
+</Window>

@@ -1,9 +1,9 @@
-﻿<Window x:Class="GitHub_Tool.GUI.CommitWindow"
+﻿<Window x:Class="GitHubSearch.GUI.CommitWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GitHub_Tool"
+        xmlns:local="clr-namespace:GitHubSearch"
         mc:Ignorable="d"
         Title="CommitWindow" Height="450" Width="800">
 
@@ -23,7 +23,7 @@
         </DataGrid>
         <WrapPanel HorizontalAlignment="Center" Margin="0,30,0,0">
             <Label Content="Download destination" />
-            <TextBox Name="downloadDestinationTextBox"  Margin="10,0,0,0"/>
+            <TextBox Name="downloadDestinationTextBox" MinWidth="50" Margin="10,0,0,0"/>
         </WrapPanel>
         <Button Content="Download" x:Name="downloadButton" Click="downloadButtonClick"/>
         <TextBlock Text="Download Complete" x:Name="downloadTextBlock" Visibility="Hidden" FontSize="16" HorizontalAlignment="Center" Margin="0,15,0,0"/>

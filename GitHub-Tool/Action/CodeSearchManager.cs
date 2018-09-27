@@ -3,26 +3,25 @@ using Octokit;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GitHub_Tool.Model;
-using Model = GitHub_Tool.Model;
+using GitHubSearch.Model;
+using Model = GitHubSearch.Model;
 
-namespace GitHub_Tool.Action
+namespace GitHubSearch.Action
 {
-    class CodeSearch
+    class CodeSearchManager
     {
 
-        public async Task<List<File>> searchCode(Model.SearchCodeRequestParameters requestParameters) 
+        public async Task<List<File>> searchCode(Model.SearchCodeRequestParameters requestParameters, int firstPage, int lastPage) 
         {
 
             List<File> files = new List<File>();       
-            var codeRequest = getSearchCodeRequest(requestParameters);         
-            var numberOfPages = 3;
-
-            for (int i = 1; i <= numberOfPages; i++)
+            SearchCodeRequest codeRequest = getSearchCodeRequest(requestParameters);     
+            
+            for (int i = firstPage; i <= lastPage; i++)
             {
                 codeRequest.Page = i;
-                var result = await GlobalVariables.client.Search.SearchCode(codeRequest).ConfigureAwait(false);
-
+                SearchCodeResult result = await GlobalVariables.client.Search.SearchCode(codeRequest).ConfigureAwait(false);
+                
                 files.AddRange(result.Items.Select(file => new Model.File
                 {
                     Name = file.Name,
@@ -35,6 +34,30 @@ namespace GitHub_Tool.Action
             }
 
             return files;
+        }
+
+
+        public async Task<int> getNumberOfPages(Model.SearchCodeRequestParameters requestParameters)
+        {
+            SearchCodeRequest codeRequest = getSearchCodeRequest(requestParameters);
+            SearchCodeResult result = await GlobalVariables.client.Search.SearchCode(codeRequest);
+
+            if (result.TotalCount == 0)
+            {
+                return 0;
+            }
+
+            if (result.TotalCount > 1000)
+            {
+                return GlobalVariables.MaximumNumberOfPages;
+            }
+
+            if (result.TotalCount % codeRequest.PerPage == 0)
+            {
+                return result.TotalCount / codeRequest.PerPage;
+            }
+
+            return result.TotalCount / codeRequest.PerPage + 1;
         }
 
 
@@ -118,7 +141,6 @@ namespace GitHub_Tool.Action
         }
 
 
-        //na to valw sto download
         public async Task<RepositoryContent> getSpecificVersion(string owner, string repoName, string path, string sha)
         {
             var file = await GlobalVariables.client

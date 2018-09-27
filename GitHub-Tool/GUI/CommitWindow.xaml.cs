@@ -1,34 +1,31 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using GitHub_Tool.Model;
-using GitHub_Tool.Action;
-using System.Collections;
-using System.Linq;
+using GitHubSearch.Model;
+using GitHubSearch.Action;
 using System.Collections.Generic;
-using System.ComponentModel;
 
-namespace GitHub_Tool.GUI
+namespace GitHubSearch.GUI
 {
 
     public partial class CommitWindow : Window
     {
 
-        Download download;
+        DownloadLocallyManager download;
 
         public CommitWindow()
         {
             InitializeComponent();
-            download = new Download();
+            download = new DownloadLocallyManager();
             downloadDestinationTextBox.Text = download.DefaultDownloadDestination;
         }
 
 
-        private void checkAllCommits(object sender, RoutedEventArgs e)     //doesn't work for some reason
+        private void checkAllCommits(object sender, RoutedEventArgs e)
         {
             checkOrUncheck(true);
         }
 
-        private void uncheckAllCommits(object sender, RoutedEventArgs e)    //doesn't work for some reason
+        private void uncheckAllCommits(object sender, RoutedEventArgs e)
         {
             checkOrUncheck(false);
         }
@@ -55,16 +52,9 @@ namespace GitHub_Tool.GUI
             downloadTextBlock.Visibility = Visibility.Hidden;
             downloadButton.IsEnabled = false;
 
-            if (download.checkIfDirectoryExists(downloadDestinationTextBox.Text))
+            if (download.directoryExists(downloadDestinationTextBox.Text))
             {
-                foreach (Commit commit in commitsDataGrid.ItemsSource)
-                {
-                    if (commit.IsSelected == true)
-                    {
-                        download.downloadContent(commit, downloadDestinationTextBox.Text);
-                    }
-                }
-                
+                download.downloadFIleContent(commitsDataGrid.ItemsSource, downloadDestinationTextBox.Text);
                 downloadTextBlock.Visibility = Visibility.Visible;
             }
             else

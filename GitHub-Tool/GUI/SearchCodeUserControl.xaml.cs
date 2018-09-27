@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using GitHub_Tool.Action;
-using GitHub_Tool.Model;
-using Model = GitHub_Tool.Model;
-using GitHub_Tool.Action.Validation;
+using GitHubSearch.Action;
+using GitHubSearch.Model;
+using Model = GitHubSearch.Model;
+using GitHubSearch.Action.Validation;
 
-namespace GitHub_Tool.GUI
+namespace GitHubSearch.GUI
 {
 
     public partial class SearchCodeUserControl : UserControl
@@ -23,46 +23,67 @@ namespace GitHub_Tool.GUI
         public string Extension { get; set; }
         public string Path { get; set; }
         public int Size { get; set; }
-        CodeSearch codeSearch;
+        CodeSearchManager codeSearch;
+        DownloadLocallyManager download;
         DateValidator DateValidator;
+        SearchCodeRequestParameters requestParameters;
 
         public SearchCodeUserControl()
         {
             InitializeComponent();
-            codeSearch = new CodeSearch();
+            codeSearch = new CodeSearchManager();
+            download = new DownloadLocallyManager();
             DateValidator = new DateValidator();
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             languageComboBox.SelectedIndex = (int)Enum.Parse(typeof(Language), "Unknown");
-            AccessToken = "a4a7866ed56ca530448ba21d8274e413a367b02d";
+            AccessToken = "";
             DataContext = this;
         }
 
 
-        private async void searchCodeButtonClick(object sender, RoutedEventArgs e)
+        private void searchCodeButtonClick(object sender, RoutedEventArgs e)
         {
 
-            if ( isValid(termTextBox, ownerTextBox, fileNameTextBox, extensionTextBox, pathTextBox, sizeTextBox,accessTokenTextBox))
+            if (isValid(termTextBox, ownerTextBox, fileNameTextBox, extensionTextBox, pathTextBox, sizeTextBox, accessTokenTextBox))
             {
                 searchButton.IsEnabled = false;
-                GlobalVariables.accessToken = accessTokenTextBox.Text;
-                GlobalVariables.client = GlobalVariables.createGithubClient();
+                downloadResultsButton.Visibility = Visibility.Hidden;
                 noResultsLabel.Visibility = Visibility.Hidden;
+                GlobalVariables.client = GlobalVariables.createGithubClient(accessTokenTextBox.Text);
 
-                SearchCodeRequestParameters requestParameters = new SearchCodeRequestParameters(termTextBox.Text, extensionTextBox.Text,
-                                                                    ownerTextBox.Text, Int32.Parse(sizeTextBox.Text), languageComboBox.Text,
-                                                                    pathIncludedCheckBox.IsChecked, forkComboBox.Text, fileNameTextBox.Text,
-                                                                    pathTextBox.Text, sizeComboBox.Text);
+                requestParameters = new SearchCodeRequestParameters(termTextBox.Text, extensionTextBox.Text, ownerTextBox.Text,
+                                                                    Int32.Parse(sizeTextBox.Text), languageComboBox.Text,
+                                                                    pathIncludedCheckBox.IsChecked, forkComboBox.Text,
+                                                                    fileNameTextBox.Text, pathTextBox.Text, sizeComboBox.Text);
+                tryShowResults(requestParameters);
+                searchButton.IsEnabled = true;
+            }
+        }
+
+
+        private async void tryShowResults(SearchCodeRequestParameters requestParameters)
+        {
                 try
                 {
-                    var result = await codeSearch.searchCode(requestParameters);
-                    noResultsLabel.Visibility = pickVisibility(result.Count);
-                    filesDataGrid.ItemsSource = result;
-                    numberOfResults.Text = result.Count.ToString();
+                    var pagesCount = await codeSearch.getNumberOfPages(requestParameters);
+
+                    if (pagesCount != 0)
+                    {
+                        PageDialog pageDialog = new PageDialog(pagesCount);
+                        pageDialog.ShowDialog();
+                        var result = await codeSearch.searchCode(requestParameters, pageDialog.FirstPage, pageDialog.LastPage);
+                        filesDataGrid.ItemsSource = result;
+                        downloadResultsButton.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        filesDataGrid.ItemsSource = null;
+                        noResultsLabel.Visibility = Visibility.Visible;
+                    }
                 }
-                catch (ApiValidationException)
+                catch (ApiValidationException exception)
                 {
-                    MessageBox.Show("Searches that use qualifiers only are not allowed. Include one of the: search term," +
-                        "owner or file name", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch (RateLimitExceededException exception)
                 {
@@ -77,11 +98,13 @@ namespace GitHub_Tool.GUI
                 {
                     MessageBox.Show("Authentication failed: bad credentials", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-
-                searchButton.IsEnabled = true;
-            }
-
+                catch (AbuseException exception)
+                {
+                    MessageBox.Show("You have triggered an abuse detection mechanism. Try again after " + exception.RetryAfterSeconds +
+                                    " seconds", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
         }
+        
 
 
         private bool isValid(TextBox term, TextBox owner, TextBox fileName, TextBox extension, TextBox path,
@@ -92,21 +115,12 @@ namespace GitHub_Tool.GUI
                     && !Validation.GetHasError(extension) && !Validation.GetHasError(accessToken);
         }
 
-        private Visibility pickVisibility(int numberOfResults)
-        {
-            if (numberOfResults == 0)
-            {
-                return Visibility.Visible;
-            }
-            return Visibility.Hidden;
-        }
-
 
         private async void showCommitsOnClick(object sender, RoutedEventArgs e)
         {
 
             CommitWindow commitWindow = new CommitWindow();
-            var selectedFile = (File)filesDataGrid.CurrentCell.Item;
+            var selectedFile = (Model.File)filesDataGrid.CurrentCell.Item;
             List<Model.Commit> commitList = await codeSearch.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path);
 
             this.Dispatcher.Invoke(() =>
@@ -114,8 +128,15 @@ namespace GitHub_Tool.GUI
                 commitWindow.commitsDataGrid.ItemsSource = commitList;
                 commitWindow.Show();
             });
-
         }
+
+
+        private  void downloadResultsButtonClick(object sender, RoutedEventArgs e)
+        {
+            DownloadResultsWindow downloadResultsWindow = new DownloadResultsWindow(requestParameters, filesDataGrid.Items);
+            downloadResultsWindow.Show();           
+        }
+
 
 
         private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)
@@ -126,6 +147,7 @@ namespace GitHub_Tool.GUI
             e.ClipboardRowContent.Add(currentCell);
 
         }
+
 
         private void HyperlinkOnClick(object sender, RoutedEventArgs e)
         {

@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 
 
-namespace GitHub_Tool.GUI
+namespace GitHubSearch.GUI
 {
     public partial class MainWindow : Window
     {

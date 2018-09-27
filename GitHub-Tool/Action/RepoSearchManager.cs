@@ -2,25 +2,25 @@
 using Octokit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GitHub_Tool.Model;
-using Model = GitHub_Tool.Model;
+using GitHubSearch.Model;
+using Model = GitHubSearch.Model;
 using System.Linq;
+using System.Diagnostics;
 
-namespace GitHub_Tool.Action
+namespace GitHubSearch.Action
 {
-    class RepoSearch
+    class RepoSearchManager
     {
-        public async Task<List<Model.Repository>> searchRepos( Model.SearchRepositoriesRequestParameters requestParameters)
+        public async Task<List<Model.Repository>> searchRepos(SearchRepositoriesRequestParameters requestParameters, int firstPage, int lastPage)
         {
 
             List<Model.Repository> repos = new List<Model.Repository>();
-            var repoRequest = getSearchRepoRequest(requestParameters);
-            var numberOfPages = 3;
+            SearchRepositoriesRequest repoRequest = getSearchRepoRequest(requestParameters);
             
-            for (int i = 1; i <= numberOfPages; i++)
+            for (int i = firstPage; i <= lastPage; i++)
             {
                 repoRequest.Page = i;
-                var result = await GlobalVariables.client.Search.SearchRepo(repoRequest);
+                SearchRepositoryResult result = await GlobalVariables.client.Search.SearchRepo(repoRequest);
 
                 repos.AddRange(result.Items.Select(repo => new Model.Repository
                 {
@@ -36,13 +36,13 @@ namespace GitHub_Tool.Action
                     Language = repo.Language
 
                 }).ToList());
-            }     
-
+            }
+            Debug.WriteLine(repos.Count);
             return repos;
         }
 
 
-        private SearchRepositoriesRequest getSearchRepoRequest(Model.SearchRepositoriesRequestParameters parameters)
+        private SearchRepositoriesRequest getSearchRepoRequest(SearchRepositoriesRequestParameters parameters)
         {
             SearchRepositoriesRequest repoRequest;
 
@@ -69,6 +69,30 @@ namespace GitHub_Tool.Action
             repoRequest.Updated = getUpdatedAtParameter(parameters.UpdatedAt);
             
             return repoRequest;
+        }
+
+
+        public async Task<int> getNumberOfPages(Model.SearchRepositoriesRequestParameters requestParameters)
+        {
+            SearchRepositoriesRequest repoRequest = getSearchRepoRequest(requestParameters);
+            SearchRepositoryResult result = await GlobalVariables.client.Search.SearchRepo(repoRequest);
+
+            if (result.TotalCount == 0)
+            {
+                return 0;
+            }
+
+            if (result.TotalCount > 1000)
+            {
+                return GlobalVariables.MaximumNumberOfPages;
+            }
+
+            if (result.TotalCount % repoRequest.PerPage == 0)
+            {
+                return result.TotalCount / repoRequest.PerPage;
+            }
+
+            return result.TotalCount / repoRequest.PerPage + 1;
         }
 
 

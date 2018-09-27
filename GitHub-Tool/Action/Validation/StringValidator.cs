@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace GitHub_Tool.Action.Validation
+namespace GitHubSearch.Action.Validation
 {
     class StringValidator : ValidationRule
     {

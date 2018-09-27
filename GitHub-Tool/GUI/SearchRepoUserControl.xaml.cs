@@ -3,14 +3,14 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using GitHub_Tool.Action;
-using GitHub_Tool.Model;
-using Model = GitHub_Tool.Model;
+using GitHubSearch.Action;
+using GitHubSearch.Model;
+using Model = GitHubSearch.Model;
 using Octokit;
 using System.ComponentModel;
-using GitHub_Tool.Action.Validation;
+using GitHubSearch.Action.Validation;
 
-namespace GitHub_Tool.GUI
+namespace GitHubSearch.GUI
 {
 
     public partial class SearchRepoUserControl : UserControl
@@ -22,8 +22,9 @@ namespace GitHub_Tool.GUI
         public int Stars { get; set; }
         public int Forks { get; set; }
         public int Size { get; set; }
-        RepoSearch repoSearch;
+        RepoSearchManager repoSearch;
         RepoManager repoManager;
+        SearchRepositoriesRequestParameters requestParameters;
         DateValidator DateValidator;
 
         public SearchRepoUserControl()
@@ -35,55 +36,79 @@ namespace GitHub_Tool.GUI
             DateValidator = new DateValidator();
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             languageComboBox.SelectedIndex = (int)Enum.Parse(typeof(Language), "Unknown");
-            AccessToken = "a4a7866ed56ca530448ba21d8274e413a367b02d";
-            repoSearch = new RepoSearch();
+            AccessToken = "";
+            repoSearch = new RepoSearchManager();
             repoManager = new RepoManager();
             DataContext = this;
         }
 
 
-        private async void searchReposButtonClick(object sender, RoutedEventArgs e)
+        private void searchReposButtonClick(object sender, RoutedEventArgs e)
         {
             if ( isValid(termTextBox, ownerTextBox, starsTextBox, forksTextBox, sizeTextBox, accessTokenTextBox) ) 
             {
                 searchButton.IsEnabled = false;
-                GlobalVariables.accessToken = accessTokenTextBox.Text;
-                GlobalVariables.client = GlobalVariables.createGithubClient();
+                downloadResultsButton.Visibility = Visibility.Hidden;
                 noResultsLabel.Visibility = Visibility.Hidden;
-                endDatePicker.SelectedDate = DateValidator.validate( datePicker, endDatePicker);
+                endDatePicker.SelectedDate = DateValidator.validate(datePicker, endDatePicker);
+                GlobalVariables.client = GlobalVariables.createGithubClient(accessTokenTextBox.Text);                
 
-                SearchRepositoriesRequestParameters requestParameters = new SearchRepositoriesRequestParameters(termTextBox.Text, ownerTextBox.Text, Int32.Parse(starsTextBox.Text)
-                                                                            ,Int32.Parse(forksTextBox.Text), Int32.Parse(sizeTextBox.Text), sortComboBox.Text, orderComboBox.Text,
-                                                                            datePicker.SelectedDate, dateComboBox.Text, updateDate.SelectedDate, languageComboBox.Text,
-                                                                            endDatePicker.SelectedDate, ReadmeIncludedCheckBox.IsChecked, starsComboBox.Text, forksComboBox.Text,
-                                                                            sizeComboBox.Text);
-                try
-                {
-                    var result = await repoSearch.searchRepos(requestParameters);
-                    noResultsLabel.Visibility = pickVisibility(result.Count);
-                    reposDataGrid.ItemsSource = result;
-                }
-                catch (ApiValidationException exception)
-                {
-                    MessageBox.Show(exception.Message + ": The listed users and repositories cannot be searched either because the " +
-                        "resources do not exist or you do not have permission to view them.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                requestParameters = new SearchRepositoriesRequestParameters(termTextBox.Text, ownerTextBox.Text,
+                                                                            Int32.Parse(starsTextBox.Text), Int32.Parse(forksTextBox.Text),
+                                                                            Int32.Parse(sizeTextBox.Text), sortComboBox.Text, orderComboBox.Text,
+                                                                            datePicker.SelectedDate, dateComboBox.Text, updateDate.SelectedDate,
+                                                                            languageComboBox.Text, endDatePicker.SelectedDate, ReadmeIncludedCheckBox.IsChecked,
+                                                                            starsComboBox.Text, forksComboBox.Text, sizeComboBox.Text);
 
-                }
-                catch (RateLimitExceededException exception)
-                {
-                    MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (System.Net.Http.HttpRequestException)
-                {
-                    MessageBox.Show("An error occurred while trying to send the request. Please check your" +
-                        " internet connection", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (AuthorizationException)
-                {
-                    MessageBox.Show("Authentication failed: bad credentials", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-
+                tryShowResults(requestParameters);
                 searchButton.IsEnabled = true;
+            }
+        }
+
+
+        private async void tryShowResults(SearchRepositoriesRequestParameters requestParameters)
+        {
+            try
+            {
+                var pagesCount = await repoSearch.getNumberOfPages(requestParameters);
+
+                if (pagesCount != 0)
+                {
+                    PageDialog pageDialog = new PageDialog(pagesCount);
+                    pageDialog.ShowDialog();
+                    var result = await repoSearch.searchRepos(requestParameters, pageDialog.FirstPage, pageDialog.LastPage);
+                    reposDataGrid.ItemsSource = result;
+                    downloadResultsButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    reposDataGrid.ItemsSource = null;
+                    noResultsLabel.Visibility = Visibility.Visible;
+                }
+            }
+            catch (ApiValidationException)
+            {
+                MessageBox.Show("The listed users and repositories cannot be searched either because the " +
+                    "resources do not exist or you do not have permission to view them.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
+            catch (RateLimitExceededException exception)
+            {
+                MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (System.Net.Http.HttpRequestException)
+            {
+                MessageBox.Show("An error occurred while trying to send the request. Please check your" +
+                    " internet connection", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (AuthorizationException)
+            {
+                MessageBox.Show("Authentication failed: bad credentials", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (AbuseException exception)
+            {
+                MessageBox.Show("You have triggered an abuse detection mechanism. Try again after " + exception.RetryAfterSeconds +
+                                " seconds", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -94,14 +119,10 @@ namespace GitHub_Tool.GUI
                     && !Validation.GetHasError(forks) && !Validation.GetHasError(size) && !Validation.GetHasError(accessToken);
         }
 
-
-        private Visibility pickVisibility(int numberOfResults)
+        private void downloadResultsButtonClick(object sender, RoutedEventArgs e)
         {
-            if (numberOfResults == 0)
-            {
-                return Visibility.Visible;
-            }
-            return Visibility.Hidden;
+            DownloadResultsWindow downloadResultsWindow = new DownloadResultsWindow(requestParameters, reposDataGrid.Items);
+            downloadResultsWindow.Show();
         }
 
 
