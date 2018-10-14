@@ -37,7 +37,7 @@ namespace GitHubSearch.Action
 
                 }).ToList());
             }
-            Debug.WriteLine(repos.Count);
+
             return repos;
         }
 

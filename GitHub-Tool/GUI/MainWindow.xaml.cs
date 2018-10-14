@@ -8,6 +8,8 @@ namespace GitHubSearch.GUI
     {
         
         TabItem tabUserPage;
+        SearchCodeUserControl searchCodeUserControl;
+        SearchRepoUserControl searchRepoUserControl;
 
         public MainWindow()
         {
@@ -18,7 +20,7 @@ namespace GitHubSearch.GUI
         private void searchCodeUserControlButtonClick(object sender, RoutedEventArgs e)
         {
             MainTab.Items.Clear(); 
-            var searchCodeUserControl = new SearchCodeUserControl();
+            searchCodeUserControl = new SearchCodeUserControl();
             tabUserPage = new TabItem { Content = searchCodeUserControl };
             MainTab.Items.Add(tabUserPage); 
             MainTab.Items.Refresh();
@@ -28,7 +30,7 @@ namespace GitHubSearch.GUI
         private void searchReposUserControlButtonClick(object sender, RoutedEventArgs e)
         {
             MainTab.Items.Clear(); 
-            var searchRepoUserControl = new SearchRepoUserControl();
+            searchRepoUserControl = new SearchRepoUserControl();
             tabUserPage = new TabItem { Content = searchRepoUserControl };
             MainTab.Items.Add(tabUserPage); 
             MainTab.Items.Refresh();

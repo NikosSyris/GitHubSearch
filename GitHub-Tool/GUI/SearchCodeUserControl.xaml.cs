@@ -27,6 +27,9 @@ namespace GitHubSearch.GUI
         DownloadLocallyManager download;
         DateValidator DateValidator;
         SearchCodeRequestParameters requestParameters;
+        PageDialog pageDialog;
+        CommitWindow commitWindow;
+        DownloadResultsWindow downloadResultsWindow;
 
         public SearchCodeUserControl()
         {
@@ -36,7 +39,7 @@ namespace GitHubSearch.GUI
             DateValidator = new DateValidator();
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             languageComboBox.SelectedIndex = (int)Enum.Parse(typeof(Language), "Unknown");
-            AccessToken = "";
+            AccessToken = "b662ba89eb7878f9e75b885789bda4dbbb5115ec";
             DataContext = this;
         }
 
@@ -69,7 +72,7 @@ namespace GitHubSearch.GUI
 
                     if (pagesCount != 0)
                     {
-                        PageDialog pageDialog = new PageDialog(pagesCount);
+                        pageDialog = new PageDialog(pagesCount);
                         pageDialog.ShowDialog();
                         var result = await codeSearch.searchCode(requestParameters, pageDialog.FirstPage, pageDialog.LastPage);
                         filesDataGrid.ItemsSource = result;
@@ -119,7 +122,7 @@ namespace GitHubSearch.GUI
         private async void showCommitsOnClick(object sender, RoutedEventArgs e)
         {
 
-            CommitWindow commitWindow = new CommitWindow();
+            commitWindow = new CommitWindow();
             var selectedFile = (Model.File)filesDataGrid.CurrentCell.Item;
             List<Model.Commit> commitList = await codeSearch.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path);
 
@@ -133,7 +136,7 @@ namespace GitHubSearch.GUI
 
         private  void downloadResultsButtonClick(object sender, RoutedEventArgs e)
         {
-            DownloadResultsWindow downloadResultsWindow = new DownloadResultsWindow(requestParameters, filesDataGrid.Items);
+            downloadResultsWindow = new DownloadResultsWindow(requestParameters, filesDataGrid.Items);
             downloadResultsWindow.Show();           
         }
 

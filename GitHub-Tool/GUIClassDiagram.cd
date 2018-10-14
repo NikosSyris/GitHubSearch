@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GitHubSearch.GUI.CommitWindow" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="8.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAEAAAAAAAAAAAAAAAAAAAAAAYAAAgABAAA=</HashCode>
+      <FileName>GUI\CommitWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GitHubSearch.GUI.DownloadResultsWindow" BaseTypeListCollapsed="true">
+    <Position X="8" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAEAAAAAAAAAAAAAAAAgAABAAA=</HashCode>
+      <FileName>GUI\DownloadResultsWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GitHubSearch.GUI.MainWindow" BaseTypeListCollapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAICAAAAAAAAAAAQACAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="searchCodeUserControl" />
+      <Field Name="searchRepoUserControl" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GitHubSearch.GUI.PageDialog" BaseTypeListCollapsed="true">
+    <Position X="8" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAIAAAAAAACIAAAAACIAAAAAAAAABAAAAAAIAA=</HashCode>
+      <FileName>GUI\PageDialog.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GitHubSearch.GUI.RepositoryWindow" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="8.75" Width="2" />
+    <AssociationLine Name="commitWindow" Type="GitHubSearch.GUI.CommitWindow" FixedFromPoint="true">
+      <Path>
+        <Point X="10.75" Y="10.25" />
+        <Point X="6.5" Y="10.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAgAACAAgAAAAAAAIAAAAASBAA=</HashCode>
+      <FileName>GUI\RepositoryWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="commitWindow" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GitHubSearch.GUI.SearchCodeUserControl" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAiAAAAAigIAAkAEAACCEgAAAQAAUIAAAABxAAA=</HashCode>
+      <FileName>GUI\SearchCodeUserControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="commitWindow" />
+      <Field Name="pageDialog" />
+      <Field Name="downloadResultsWindow" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GitHubSearch.GUI.SearchRepoUserControl" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="2.25" Width="2.25" />
+    <AssociationLine Name="pageDialog" Type="GitHubSearch.GUI.PageDialog" FixedFromPoint="true">
+      <Path>
+        <Point X="11.25" Y="6.875" />
+        <Point X="9.75" Y="6.875" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AEAACAiAAEAAigAAIEAEAAAC0AAAAgAAUIAAAAAQgQA=</HashCode>
+      <FileName>GUI\SearchRepoUserControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="pageDialog" />
+      <Field Name="downloadResultsWindow" />
+      <Field Name="repositoryWindow" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

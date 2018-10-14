@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="GitHubSearch.Action.CodeSearchManager">
+    <Position X="0.5" Y="2.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQACAAAAAAgEAAAACAAAAAABAAEAAAAAAAAAAEA=</HashCode>
+      <FileName>Action\CodeSearchManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.DownloadLocallyManager">
+    <Position X="6.25" Y="4" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAABAAAAAAQAAAgAAAABAAAAAAAAAQIAAAAAAAAA=</HashCode>
+      <FileName>Action\DownloadLocallyManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.RepoManager">
+    <Position X="4.75" Y="2.25" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAIAgAAAA=</HashCode>
+      <FileName>Action\RepoManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.RepoSearchManager">
+    <Position X="11.25" Y="2" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABQQAAAAAAAgAgAAAAAAAAACAEAAAACAAAAAAAQA=</HashCode>
+      <FileName>Action\RepoSearchManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.Validation.AccessTokenValidator">
+    <Position X="3.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Action\Validation\AccessTokenValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.Validation.DateValidator">
+    <Position X="9.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Action\Validation\DateValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.Validation.IntegerValidator">
+    <Position X="6.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Action\Validation\IntegerValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.Validation.StringValidator">
+    <Position X="1" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Action\Validation\StringValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

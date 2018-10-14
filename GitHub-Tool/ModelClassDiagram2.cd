@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="GitHubSearch.Model.Commit">
+    <Position X="4.75" Y="7" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAACAAQAAEAAAACAAAAAAgAAAAAAAABDAAACAAAA=</HashCode>
+      <FileName>Model\Commit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Model.File">
+    <Position X="4.75" Y="3.75" Width="1.75" />
+    <AssociationLine Name="AllCommits" Type="GitHubSearch.Model.Commit">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-2.002" Y="0.141" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAIAEAAAAAQAAAAAAAAAABAAgAAAAAA=</HashCode>
+      <FileName>Model\File.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AllCommits" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="GitHubSearch.Model.Folder">
+    <Position X="10.75" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAQAAACAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Model\Folder.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="FileList" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="GitHubSearch.Model.Repository">
+    <Position X="7.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACACAAgiAAAACAAACQAAgAAAAQAAAAAgAAAAIA=</HashCode>
+      <FileName>Model\Repository.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RootFolder" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Files" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

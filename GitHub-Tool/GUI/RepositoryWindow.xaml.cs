@@ -14,6 +14,7 @@ namespace GitHubSearch.GUI
 
         private Folder root;
         CodeSearchManager codeSearch;
+        CommitWindow commitWindow;
 
         public RepositoryWindow(Folder rootFolder)
         {
@@ -56,7 +57,7 @@ namespace GitHubSearch.GUI
 
         private async void showCommitsOnClick(object sender, RoutedEventArgs e)
         {         
-            CommitWindow commitWindow = new CommitWindow();
+            commitWindow = new CommitWindow();
 
             var selectedFile = (File)filesDataGrid.CurrentCell.Item;
             List<Commit> commitList = await codeSearch.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path).ConfigureAwait(false);

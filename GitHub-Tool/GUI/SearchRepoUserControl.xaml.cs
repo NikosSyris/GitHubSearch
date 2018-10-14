@@ -26,6 +26,9 @@ namespace GitHubSearch.GUI
         RepoManager repoManager;
         SearchRepositoriesRequestParameters requestParameters;
         DateValidator DateValidator;
+        PageDialog pageDialog;
+        DownloadResultsWindow downloadResultsWindow;
+        RepositoryWindow repositoryWindow;
 
         public SearchRepoUserControl()
         {
@@ -36,7 +39,7 @@ namespace GitHubSearch.GUI
             DateValidator = new DateValidator();
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             languageComboBox.SelectedIndex = (int)Enum.Parse(typeof(Language), "Unknown");
-            AccessToken = "";
+            AccessToken = "b662ba89eb7878f9e75b885789bda4dbbb5115ec";
             repoSearch = new RepoSearchManager();
             repoManager = new RepoManager();
             DataContext = this;
@@ -74,7 +77,7 @@ namespace GitHubSearch.GUI
 
                 if (pagesCount != 0)
                 {
-                    PageDialog pageDialog = new PageDialog(pagesCount);
+                    pageDialog = new PageDialog(pagesCount);
                     pageDialog.ShowDialog();
                     var result = await repoSearch.searchRepos(requestParameters, pageDialog.FirstPage, pageDialog.LastPage);
                     reposDataGrid.ItemsSource = result;
@@ -121,14 +124,13 @@ namespace GitHubSearch.GUI
 
         private void downloadResultsButtonClick(object sender, RoutedEventArgs e)
         {
-            DownloadResultsWindow downloadResultsWindow = new DownloadResultsWindow(requestParameters, reposDataGrid.Items);
+            downloadResultsWindow = new DownloadResultsWindow(requestParameters, reposDataGrid.Items);
             downloadResultsWindow.Show();
         }
 
 
         private async void showStructureOnClick(object sender, RoutedEventArgs e)
         {
-            RepositoryWindow repositoryWindow;
             var tempRepo = (Model.Repository)reposDataGrid.CurrentCell.Item;
 
             tempRepo = await repoManager.getRepoStructure(tempRepo);

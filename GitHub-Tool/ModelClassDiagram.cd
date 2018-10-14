@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="GitHubSearch.Model.SearchRepositoriesRequestParameters">
+    <Position X="0.5" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AEEACACECAAAiAAABAIAAAAgkAAAIAABEAAAAAAAAAA=</HashCode>
+      <FileName>Model\SearchRepositoriesRequestParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Model.Commit">
+    <Position X="7" Y="8" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAACAAQAAEAAAACAAAAAAgAAAAAAAABDAAACAAAA=</HashCode>
+      <FileName>Model\Commit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Model.File">
+    <Position X="7.25" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAIAEAAAAAQAAAAAAAAAABAAgAAAAAA=</HashCode>
+      <FileName>Model\File.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AllCommits" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="GitHubSearch.Model.Folder">
+    <Position X="13.25" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAQAAACAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Model\Folder.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="FileList" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="GitHubSearch.Model.Repository">
+    <Position X="9.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACACAAgiAAAACAAACQAAgAAAAQAAAAAgAAAAIA=</HashCode>
+      <FileName>Model\Repository.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RootFolder" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Files" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="GitHubSearch.Model.RequestParameters">
+    <Position X="2.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RequestParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Model.SearchCodeRequestParameters">
+    <Position X="3.75" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACACAAAgAIAAAIAAAAAAAAAAQAAECAAAABAAAA=</HashCode>
+      <FileName>Model\SearchCodeRequestParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Model.GlobalVariables">
+    <Position X="12.75" Y="7.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAABAAAAAA=</HashCode>
+      <FileName>Model\GlobalVariables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

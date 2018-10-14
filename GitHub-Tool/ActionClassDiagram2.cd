@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="GitHubSearch.Action.CodeSearchManager">
+    <Position X="0.5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQACAAAAAAgEAAAACAAAAAABAAEAAAAAAAAAAEA=</HashCode>
+      <FileName>Action\CodeSearchManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.DownloadLocallyManager">
+    <Position X="0.5" Y="4" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAABAAAAAAQAAAgAAAABAAAAAAAAAQIAAAAAAAAA=</HashCode>
+      <FileName>Action\DownloadLocallyManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="codeSearch" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GitHubSearch.Action.RepoManager">
+    <Position X="3.5" Y="4" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAIAgAAAA=</HashCode>
+      <FileName>Action\RepoManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GitHubSearch.Action.RepoSearchManager">
+    <Position X="4.75" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABQQAAAAAAAgAgAAAAAAAAACAEAAAACAAAAAAAQA=</HashCode>
+      <FileName>Action\RepoSearchManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
