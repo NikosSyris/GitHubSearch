@@ -53,7 +53,8 @@ Browse repository structure with direct links to every file
 
 ### Download the results
 
-<img width="780" height="255" alt="image" src="https://github.com/user-attachments/assets/dd67b333-9457-46e1-8bd0-9c28e486d371" />
+<img width="775" height="305" alt="image" src="https://github.com/user-attachments/assets/8c32c83d-f038-43d6-af20-3573a9c89415" />
+
 
 <img width="1894" height="453" alt="image" src="https://github.com/user-attachments/assets/0e4403d4-5535-459b-801e-3a8cc91d0234" />
 
