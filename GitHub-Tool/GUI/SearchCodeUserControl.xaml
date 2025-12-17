@@ -10,7 +10,7 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox"  MinWidth="270"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="accessTokenTextBox"  MinWidth="270"  Margin="28,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="AccessToken">
                         <Binding.ValidationRules>
@@ -22,7 +22,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
-            <TextBox Name="termTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="termTextBox"  MinWidth="80"  Margin="35,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Term">
                         <Binding.ValidationRules>
@@ -37,7 +37,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Owner"/>
-            <TextBox Name="ownerTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="ownerTextBox"  MinWidth="80" Margin="65,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Owner">
                         <Binding.ValidationRules>
@@ -49,7 +49,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="File name"/>
-            <TextBox Name="fileNameTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="fileNameTextBox"  MinWidth="80" Margin="47,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="FileName">
                         <Binding.ValidationRules>
@@ -61,7 +61,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Path"/>
-            <TextBox Name="pathTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="pathTextBox"  MinWidth="80"  Margin="75,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Path">
                         <Binding.ValidationRules>
@@ -73,7 +73,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Extension"/>
-            <TextBox Name="extensionTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="extensionTextBox"  MinWidth="80"  Margin="47,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Extension">
                         <Binding.ValidationRules>
@@ -86,7 +86,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Include forks"/>
-            <ComboBox Name="forkComboBox">
+            <ComboBox Name="forkComboBox" Margin="30,0,0,0">
                 <ComboBoxItem>Yes</ComboBoxItem>
                 <ComboBoxItem IsSelected="True">No</ComboBoxItem>
             </ComboBox>
@@ -94,7 +94,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="size(bytes)"/>
-            <ComboBox Name="sizeComboBox" Margin="15,0,0,0">
+            <ComboBox Name="sizeComboBox" Margin="42,0,0,0">
                 <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
                 <ComboBoxItem>Less than</ComboBoxItem>
             </ComboBox>
@@ -110,7 +110,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Languge"/>
-            <ComboBox Name="languageComboBox" Width="115" Height="30" Margin="82,0,0,0">
+            <ComboBox Name="languageComboBox" Width="115" Height="30" Margin="50,0,0,0">
             </ComboBox>
         </WrapPanel>
 

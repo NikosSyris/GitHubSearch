@@ -5,45 +5,42 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using GitHubSearch.Action;
 using GitHubSearch.Model;
+using GitHubSearch.Services;
 
 namespace GitHubSearch.GUI
 {
-
     public partial class RepositoryWindow : Window
     {
+        private Folder _root;
+        private GitHubClientService _clientService;
+        private CodeSearchManager _codeSearchManager;
+        private CommitWindow _commitWindow;
 
-        private Folder root;
-        CodeSearchManager codeSearch;
-        CommitWindow commitWindow;
-
-        public RepositoryWindow(Folder rootFolder)
+        public RepositoryWindow(Folder rootFolder, GitHubClientService clientService)
         {
             InitializeComponent();
-            root = rootFolder;
-            codeSearch = new CodeSearchManager();
+            _root = rootFolder;
+            _clientService = clientService;
+            _codeSearchManager = new CodeSearchManager(clientService);
         }
-
 
         private void loadTreeView(object sender, RoutedEventArgs e)
         {
             TreeViewItem item = new TreeViewItem();
-            item.Header = root.Name;
-
-            item = getFolder(root,item);
-
+            item.Header = _root.Name;
+            item = GetFolder(_root, item);
             var tree = sender as TreeView;
             tree.Items.Add(item);
         }
 
-
-        private  TreeViewItem  getFolder(Folder folder, TreeViewItem item)
+        private TreeViewItem GetFolder(Folder folder, TreeViewItem item)
         {
             foreach (Folder tempFolder in folder.FolderList)
             {
                 TreeViewItem tempItem = new TreeViewItem();
                 tempItem.Header = tempFolder.Name;
                 item.Items.Add(tempItem);
-                tempItem = getFolder(tempFolder, tempItem);
+                tempItem = GetFolder(tempFolder, tempItem);
             }
 
             foreach (File file in folder.FileList)
@@ -54,21 +51,23 @@ namespace GitHubSearch.GUI
             return item;
         }
 
-
         private async void showCommitsOnClick(object sender, RoutedEventArgs e)
-        {         
-            commitWindow = new CommitWindow();
-
+        {
+            _commitWindow = new CommitWindow(_clientService);
             var selectedFile = (File)filesDataGrid.CurrentCell.Item;
-            List<Commit> commitList = await codeSearch.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path).ConfigureAwait(false);
+
+            List<Commit> commitList = await _codeSearchManager.GetCommitsForFileAsync(
+                selectedFile.Owner,
+                selectedFile.RepoName,
+                selectedFile.Path
+            ).ConfigureAwait(false);
 
             this.Dispatcher.Invoke(() =>
             {
-                commitWindow.commitsDataGrid.ItemsSource = commitList;
-                commitWindow.Show();
+                _commitWindow.commitsDataGrid.ItemsSource = commitList;
+                _commitWindow.Show();
             });
         }
-
 
         private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)
         {
@@ -76,7 +75,6 @@ namespace GitHubSearch.GUI
             e.ClipboardRowContent.Clear();
             e.ClipboardRowContent.Add(currentCell);
         }
-
 
         private void HyperlinkOnClick(object sender, RoutedEventArgs e)
         {

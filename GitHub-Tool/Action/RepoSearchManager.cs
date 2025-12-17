@@ -3,103 +3,132 @@ using Octokit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GitHubSearch.Model;
-using Model = GitHubSearch.Model;
+using GitHubSearch.Services;
 using System.Linq;
-using System.Diagnostics;
 
 namespace GitHubSearch.Action
 {
     class RepoSearchManager
     {
-        public async Task<List<Model.Repository>> searchRepos(SearchRepositoriesRequestParameters requestParameters, int firstPage, int lastPage)
-        {
+        private readonly GitHubClientService _clientService;
 
+        public RepoSearchManager(GitHubClientService clientService)
+        {
+            _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
+        }
+
+        public async Task<List<Model.Repository>> SearchRepositoriesAsync(
+            SearchRepositoriesRequestParameters requestParameters,
+            int firstPage,
+            int lastPage)
+        {
             List<Model.Repository> repos = new List<Model.Repository>();
-            SearchRepositoriesRequest repoRequest = getSearchRepoRequest(requestParameters);
-            
+            SearchRepositoriesRequest repoRequest = BuildSearchRequest(requestParameters);
+
             for (int i = firstPage; i <= lastPage; i++)
             {
                 repoRequest.Page = i;
-                SearchRepositoryResult result = await GlobalVariables.client.Search.SearchRepo(repoRequest);
+                SearchRepositoryResult result = await _clientService.Client.Search
+                    .SearchRepo(repoRequest)
+                    .ConfigureAwait(false);
 
-                repos.AddRange(result.Items.Select(repo => new Model.Repository
-                {
-                    Name = repo.Name,
-                    Owner = repo.Owner.Login,
-                    Size = repo.Size,
-                    CreatedAt = repo.CreatedAt,
-                    UpdatedAt = repo.UpdatedAt,
-                    StargazersCount = repo.StargazersCount,
-                    HtmlUrl = repo.HtmlUrl,
-                    Description = repo.Description,
-                    ForksCount = repo.ForksCount,
-                    Language = repo.Language
-
-                }).ToList());
+                repos.AddRange(result.Items.Select(repo => MapToRepository(repo)).ToList());
             }
 
             return repos;
         }
 
 
-        private SearchRepositoriesRequest getSearchRepoRequest(SearchRepositoriesRequestParameters parameters)
+        public async Task<int> GetPageCountAsync(Model.SearchRepositoriesRequestParameters requestParameters)
         {
-            SearchRepositoriesRequest repoRequest;
+            SearchRepositoriesRequest repoRequest = BuildSearchRequest(requestParameters);
+            SearchRepositoryResult result = await _clientService.Client.Search
+                .SearchRepo(repoRequest)
+                .ConfigureAwait(false);
 
-            try
+            return _clientService.CalculatePageCount(result.TotalCount, repoRequest.PerPage);
+        }
+
+
+        private SearchRepositoriesRequest BuildSearchRequest(SearchRepositoriesRequestParameters parameters)
+        {
+            if (string.IsNullOrWhiteSpace(parameters.Term))
             {
-                repoRequest = new SearchRepositoriesRequest(parameters.Term);
+                throw new ArgumentException("A search term is required for GitHub repository search.");
             }
-            catch (Exception)
+
+            SearchRepositoriesRequest repoRequest = new SearchRepositoriesRequest(parameters.Term);
+
+            if (!string.IsNullOrWhiteSpace(parameters.Language))
             {
-                repoRequest = new SearchRepositoriesRequest();      
+                if (Enum.TryParse<Language>(parameters.Language, true, out var language))
+                {
+                    repoRequest.Language = language;
+                }
             }
 
-            Language language = (Language)Enum.Parse(typeof(Language), parameters.Language);
+            if (!string.IsNullOrWhiteSpace(parameters.Owner))
+            {
+                repoRequest.User = parameters.Owner;
+            }
 
-            repoRequest.User = parameters.Owner;
-            repoRequest.Language = language;
-            repoRequest.SortField = getSortBy(parameters.SortBy);
-            repoRequest.Order = getSortDirection(parameters.Order);
-            repoRequest.Forks = pickRange(parameters.ForksChoice, parameters.Forks);
-            repoRequest.Stars = pickRange(parameters.StarsChoice, parameters.Stars); 
-            repoRequest.Size =  pickRange(parameters.SizeChoice, parameters.Size);
-            repoRequest.In = getInParameters(parameters.ReadmeIncluded, parameters.Term);
-            repoRequest.Created = getCreatedAtParameter(parameters.DateChoice, parameters.Date, parameters.EndDate);
-            repoRequest.Updated = getUpdatedAtParameter(parameters.UpdatedAt);
-            
+            repoRequest.SortField = GetSortBy(parameters.SortBy);
+            repoRequest.Order = GetSortDirection(parameters.Order);
+
+            if (!string.IsNullOrWhiteSpace(parameters.ForksChoice))
+            {
+                repoRequest.Forks = PickRange(parameters.ForksChoice, parameters.Forks);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.StarsChoice))
+            {
+                repoRequest.Stars = PickRange(parameters.StarsChoice, parameters.Stars);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.SizeChoice))
+            {
+                repoRequest.Size = PickRange(parameters.SizeChoice, parameters.Size);
+            }
+
+            repoRequest.In = GetInParameters(parameters.ReadmeIncluded, parameters.Term);
+
+            var createdRange = GetCreatedAtParameter(parameters.DateChoice, parameters.Date, parameters.EndDate);
+            if (createdRange != null)
+            {
+                repoRequest.Created = createdRange;
+            }
+
+            var updatedRange = GetUpdatedAtParameter(parameters.UpdatedAt);
+            if (updatedRange != null)
+            {
+                repoRequest.Updated = updatedRange;
+            }
+
             return repoRequest;
         }
 
 
-        public async Task<int> getNumberOfPages(Model.SearchRepositoriesRequestParameters requestParameters)
+        private static Model.Repository MapToRepository(Octokit.Repository repo)
         {
-            SearchRepositoriesRequest repoRequest = getSearchRepoRequest(requestParameters);
-            SearchRepositoryResult result = await GlobalVariables.client.Search.SearchRepo(repoRequest);
-
-            if (result.TotalCount == 0)
+            return new Model.Repository
             {
-                return 0;
-            }
-
-            if (result.TotalCount > 1000)
-            {
-                return GlobalVariables.MaximumNumberOfPages;
-            }
-
-            if (result.TotalCount % repoRequest.PerPage == 0)
-            {
-                return result.TotalCount / repoRequest.PerPage;
-            }
-
-            return result.TotalCount / repoRequest.PerPage + 1;
+                Name = repo.Name,
+                Owner = repo.Owner.Login,
+                Size = repo.Size,
+                CreatedAt = repo.CreatedAt,
+                UpdatedAt = repo.UpdatedAt,
+                StargazersCount = repo.StargazersCount,
+                HtmlUrl = repo.HtmlUrl,
+                Description = repo.Description,
+                ForksCount = repo.ForksCount,
+                Language = repo.Language
+            };
         }
 
 
-        private Range pickRange(string choice, int value)
+        private static Range PickRange(string choice, int value)
         {
-
-            if (choice.Equals("More than"))
+            if (!string.IsNullOrWhiteSpace(choice) && choice.Equals("More than", StringComparison.OrdinalIgnoreCase))
             {
                 return Range.GreaterThanOrEquals(value);
             }
@@ -108,9 +137,9 @@ namespace GitHubSearch.Action
         }
 
 
-        private InQualifier[] getInParameters(bool? readmeIncluded, string term)
+        private static InQualifier[] GetInParameters(bool? readmeIncluded, string term)
         {
-            if (readmeIncluded == true && term != null)
+            if (readmeIncluded == true && !string.IsNullOrWhiteSpace(term))
             {
                 return new[] { InQualifier.Readme, InQualifier.Description, InQualifier.Name };
             }
@@ -118,16 +147,17 @@ namespace GitHubSearch.Action
         }
 
 
-        private SortDirection getSortDirection(string choice)
+        private static SortDirection GetSortDirection(string choice)
         {
-            if ( choice.Equals("Ascending") )
+            if (!string.IsNullOrWhiteSpace(choice) && choice.Equals("Ascending", StringComparison.OrdinalIgnoreCase))
             {
                 return SortDirection.Ascending;
             }
             return SortDirection.Descending;
         }
 
-        private DateRange getUpdatedAtParameter(DateTime? date)
+
+        private static DateRange GetUpdatedAtParameter(DateTime? date)
         {
             if (!date.HasValue)
             {
@@ -138,19 +168,23 @@ namespace GitHubSearch.Action
         }
 
 
-        private DateRange getCreatedAtParameter(string dateChoice, DateTime? startDate, DateTime? endDate)
+        private static DateRange GetCreatedAtParameter(string dateChoice, DateTime? startDate, DateTime? endDate)
         {
-            
-            if ( !startDate.HasValue )
+            if (!startDate.HasValue)
             {
                 return null;
             }
 
-            if (dateChoice.Equals("Created after"))
+            if (string.IsNullOrWhiteSpace(dateChoice))
             {
                 return DateRange.GreaterThanOrEquals(startDate.Value);
             }
-            else if (dateChoice.Equals("Created before"))
+
+            if (dateChoice.Equals("Created after", StringComparison.OrdinalIgnoreCase))
+            {
+                return DateRange.GreaterThanOrEquals(startDate.Value);
+            }
+            else if (dateChoice.Equals("Created before", StringComparison.OrdinalIgnoreCase))
             {
                 return DateRange.LessThanOrEquals(startDate.Value);
             }
@@ -162,12 +196,17 @@ namespace GitHubSearch.Action
                 }
 
                 return DateRange.GreaterThanOrEquals(startDate.Value);
-            }               
+            }
         }
 
 
-        private RepoSearchSort getSortBy(string sortBy)
+        private static RepoSearchSort GetSortBy(string sortBy)
         {
+            if (string.IsNullOrWhiteSpace(sortBy))
+            {
+                return new RepoSearchSort();
+            }
+
             switch (sortBy)
             {
                 case "Stars":

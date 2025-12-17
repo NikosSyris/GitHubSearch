@@ -108,13 +108,14 @@
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\File.cs" />
     <Compile Include="Model\Folder.cs" />
-    <Compile Include="Model\GlobalVariables.cs" />
+    <Compile Include="Services\GitHubClientService.cs" />
     <Compile Include="Model\Repository.cs" />
     <Compile Include="Model\RequestParameters.cs" />
     <Compile Include="Model\SearchCodeRequestParameters.cs" />
     <Compile Include="Model\SearchRepositoriesRequestParameters.cs" />
     <Compile Include="Action\Validation\StringValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SearchRequestBuilder.cs" />
     <Compile Include="Validation.cs" />
   </ItemGroup>
   <ItemGroup>

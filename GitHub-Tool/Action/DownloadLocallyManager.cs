@@ -2,8 +2,9 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Controls;
-using Model = GitHubSearch.Model;
+using GitHubSearch.Services;
 
 namespace GitHubSearch.Action
 {
@@ -12,46 +13,67 @@ namespace GitHubSearch.Action
 
         public string DefaultDownloadDestination { get; } = @"c:\";
         public string DefaultName { get; } = "result";
-        CodeSearchManager codeSearch;
 
-        public async void downloadFIleContent(IEnumerable commits, string downloadDestination)
+        private readonly GitHubClientService _clientService;
+        private CodeSearchManager _codeSearchManager;
+
+        public DownloadLocallyManager(GitHubClientService clientService)
         {
-            codeSearch = new CodeSearchManager();
+            _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
+            _codeSearchManager = new CodeSearchManager(_clientService);
+        }
 
-            try
+        public async Task DownloadFileContentAsync(IEnumerable commits, string downloadDestination)
+        {
+            foreach (Model.Commit commit in commits)
             {
-                foreach (Model.Commit commit in commits)
+                if (commit.IsSelected == true)
                 {
-                    if (commit.IsSelected == true)
+                    try
                     {
-                        var file = await codeSearch.getSpecificVersion(commit.Owner, commit.RepoName, commit.FilePath, commit.Sha);
-                        string path = createFolder(commit, file.Name, downloadDestination);
+                        var file = await _codeSearchManager.GetFileAtCommitAsync(
+                            commit.Owner,
+                            commit.RepoName,
+                            commit.FilePath,
+                            commit.Sha
+                        ).ConfigureAwait(false);
 
-                        using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(path))
+                        if (file == null)
                         {
-                            streamWriter.WriteLine(file.HtmlUrl + "\r\n" + commit.Sha + "\r\n");
-                            streamWriter.Write(file.Content);
+                            continue;
+                        }
+
+                        string path = CreateFolder(commit, file.Name, downloadDestination);
+
+                        string content = file.Content ?? "";
+
+                        using (StreamWriter streamWriter = new StreamWriter(path))
+                        {
+                            streamWriter.WriteLine(file.HtmlUrl);
+                            streamWriter.WriteLine(commit.Sha);
+                            streamWriter.WriteLine();
+                            streamWriter.Write(content);
                         }
                     }
+                    catch (NotFoundException)
+                    {
+                        continue;
+                    }
                 }
-            }
-            catch (NotFoundException)
-            {
-                return;
             }
         }
 
 
-        public void downloadAllSearchResults(Model.RequestParameters requestParameters, ItemCollection items,
-                                                   string downloadDestination, string fileName)
+        public void DownloadAllSearchResults(Model.RequestParameters requestParameters, ItemCollection items,
+                                             string downloadDestination, string fileName)
         {
-            if (!directoryExists(downloadDestination))
+            if (!DirectoryExists(downloadDestination))
             {
                 throw new DirectoryNotFoundException();
             }
 
             string pathString = downloadDestination;
-            pathString = System.IO.Path.Combine(pathString, fileName);
+            pathString = Path.Combine(pathString, fileName);
 
             try
             {
@@ -70,7 +92,7 @@ namespace GitHubSearch.Action
                         {
                             var repo = item as Model.Repository;
                             textWriter.WriteLine(repo.Name + "\t" + repo.Owner + "\t" + repo.Size + "\t" + repo.Language + "\t"
-                                                 + repo.CreatedAt + "\t" + repo.UpdatedAt + "\t" + repo.StargazersCount + "\t" 
+                                                 + repo.CreatedAt + "\t" + repo.UpdatedAt + "\t" + repo.StargazersCount + "\t"
                                                  + repo.ForksCount + "\t" + repo.HtmlUrl + "\t" + repo.Description);
                         }
                     }
@@ -85,27 +107,32 @@ namespace GitHubSearch.Action
         }
 
 
-        public bool directoryExists(string path)
+        public bool DirectoryExists(string path)
         {
-            if (Directory.Exists(path))
-            {
-                return true;
-            }
-            return false;
+            return Directory.Exists(path);
         }
 
 
-        private string createFolder(Model.Commit commit, string fileName, string downloadDestination)
+        private string CreateFolder(Model.Commit commit, string fileName, string downloadDestination)
         {
+            // Create folder structure: destination/repoName by owner/
+            string folderPath = Path.Combine(downloadDestination, commit.RepoName + " by " + commit.Owner);
 
-            string pathString = System.IO.Path.Combine(downloadDestination, commit.RepoName + " by " + commit.Owner);
-            pathString = System.IO.Path.Combine(pathString, fileName);
-            System.IO.Directory.CreateDirectory(pathString);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
 
-            pathString = System.IO.Path.Combine(pathString, commit.CreatedAt.DateTime.ToString("yyyy-MM-dd--HH-mm-ss") +
-                                                            "-" + commit.Order.ToString());
+            // Create the full file path with timestamp and order
+            // Format: originalName_yyyy-MM-dd--HH-mm-ss_order.extension
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            string extension = Path.GetExtension(fileName);
+            string timestamp = commit.CreatedAt.DateTime.ToString("yyyy-MM-dd--HH-mm-ss");
 
-            return pathString;
+            string newFileName = $"{fileNameWithoutExtension}_{timestamp}_{commit.Order}{extension}";
+            string fullPath = Path.Combine(folderPath, newFileName);
+
+            return fullPath;
         }
     }
 }

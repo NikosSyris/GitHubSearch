@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using GitHubSearch.Action;
 using GitHubSearch.Model;
+using GitHubSearch.Services;
 using Model = GitHubSearch.Model;
 using GitHubSearch.Action.Validation;
 
@@ -18,137 +19,180 @@ namespace GitHubSearch.GUI
 
         public string AccessToken { get; set; }
         public string Owner { get; set; }
-        public string FileName { get; set; }   
+        public string FileName { get; set; }
         public string Term { get; set; }
         public string Extension { get; set; }
         public string Path { get; set; }
         public int Size { get; set; }
-        CodeSearchManager codeSearch;
-        DownloadLocallyManager download;
-        DateValidator DateValidator;
-        SearchCodeRequestParameters requestParameters;
-        PageDialog pageDialog;
-        CommitWindow commitWindow;
-        DownloadResultsWindow downloadResultsWindow;
+
+        private GitHubClientService _clientService;
+        private CodeSearchManager _codeSearchManager;
+        private DownloadLocallyManager _downloadManager;
+        private DateValidator _dateValidator;
+        private SearchCodeRequestParameters _requestParameters;
+        private PageDialog _pageDialog;
+        private CommitWindow _commitWindow;
+        private DownloadResultsWindow _downloadResultsWindow;
+
+        // Track if we're authenticated to avoid recreating the client unnecessarily
+        private string _lastUsedToken;
 
         public SearchCodeUserControl()
         {
             InitializeComponent();
-            codeSearch = new CodeSearchManager();
-            download = new DownloadLocallyManager();
-            DateValidator = new DateValidator();
+
+            _clientService = new GitHubClientService();
+            _dateValidator = new DateValidator();
+            // Note: _downloadManager will be created after authentication
+
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             languageComboBox.SelectedIndex = (int)Enum.Parse(typeof(Language), "Unknown");
-            AccessToken = "b662ba89eb7878f9e75b885789bda4dbbb5115ec";
             DataContext = this;
         }
 
 
         private void searchCodeButtonClick(object sender, RoutedEventArgs e)
         {
-
-            if (isValid(termTextBox, ownerTextBox, fileNameTextBox, extensionTextBox, pathTextBox, sizeTextBox, accessTokenTextBox))
+            if (IsFormValid())
             {
                 searchButton.IsEnabled = false;
                 downloadResultsButton.Visibility = Visibility.Hidden;
                 noResultsLabel.Visibility = Visibility.Hidden;
-                GlobalVariables.client = GlobalVariables.createGithubClient(accessTokenTextBox.Text);
 
-                requestParameters = new SearchCodeRequestParameters(termTextBox.Text, extensionTextBox.Text, ownerTextBox.Text,
-                                                                    Int32.Parse(sizeTextBox.Text), languageComboBox.Text,
-                                                                    pathIncludedCheckBox.IsChecked, forkComboBox.Text,
-                                                                    fileNameTextBox.Text, pathTextBox.Text, sizeComboBox.Text);
-                tryShowResults(requestParameters);
+                // Only create new client if token has changed
+                InitializeClientIfNeeded(accessTokenTextBox.Text);
+
+                _requestParameters = new SearchCodeRequestParameters(
+                    term: termTextBox.Text,
+                    extension: extensionTextBox.Text,
+                    owner: ownerTextBox.Text,
+                    size: Int32.Parse(sizeTextBox.Text),
+                    language: languageComboBox.Text,
+                    pathIncluded: pathIncludedCheckBox.IsChecked,
+                    forksIncluded: forkComboBox.Text,
+                    fileName: fileNameTextBox.Text,
+                    path: pathTextBox.Text,
+                    sizeChoice: sizeComboBox.Text
+                );
+
+                TryShowResultsAsync(_requestParameters);
                 searchButton.IsEnabled = true;
             }
         }
 
 
-        private async void tryShowResults(SearchCodeRequestParameters requestParameters)
+        private void InitializeClientIfNeeded(string accessToken)
         {
-                try
-                {
-                    var pagesCount = await codeSearch.getNumberOfPages(requestParameters);
-
-                    if (pagesCount != 0)
-                    {
-                        pageDialog = new PageDialog(pagesCount);
-                        pageDialog.ShowDialog();
-                        var result = await codeSearch.searchCode(requestParameters, pageDialog.FirstPage, pageDialog.LastPage);
-                        filesDataGrid.ItemsSource = result;
-                        downloadResultsButton.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        filesDataGrid.ItemsSource = null;
-                        noResultsLabel.Visibility = Visibility.Visible;
-                    }
-                }
-                catch (ApiValidationException exception)
-                {
-                    MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (RateLimitExceededException exception)
-                {
-                    MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (System.Net.Http.HttpRequestException)
-                {
-                    MessageBox.Show("An error occurred while trying to send the request. Please check your" +
-                        " internet connection", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (AuthorizationException)
-                {
-                    MessageBox.Show("Authentication failed: bad credentials", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (AbuseException exception)
-                {
-                    MessageBox.Show("You have triggered an abuse detection mechanism. Try again after " + exception.RetryAfterSeconds +
-                                    " seconds", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+            if (_lastUsedToken != accessToken)
+            {
+                _clientService.Authenticate(accessToken);
+                _codeSearchManager = new CodeSearchManager(_clientService);
+                _downloadManager = new DownloadLocallyManager(_clientService);
+                _lastUsedToken = accessToken;
+            }
         }
-        
 
 
-        private bool isValid(TextBox term, TextBox owner, TextBox fileName, TextBox extension, TextBox path,
-                            TextBox size,TextBox accessToken)
+        private async void TryShowResultsAsync(SearchCodeRequestParameters requestParameters)
         {
-            return !Validation.GetHasError(term) && !Validation.GetHasError(owner) && !Validation.GetHasError(path)
-                    && !Validation.GetHasError(fileName) && !Validation.GetHasError(size)
-                    && !Validation.GetHasError(extension) && !Validation.GetHasError(accessToken);
+            try
+            {
+                var pagesCount = await _codeSearchManager.GetPageCountAsync(requestParameters);
+
+                if (pagesCount != 0)
+                {
+                    _pageDialog = new PageDialog(pagesCount);
+                    _pageDialog.ShowDialog();
+
+                    var result = await _codeSearchManager.SearchCodeAsync(
+                        requestParameters,
+                        _pageDialog.FirstPage,
+                        _pageDialog.LastPage
+                    );
+
+                    filesDataGrid.ItemsSource = result;
+                    downloadResultsButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    filesDataGrid.ItemsSource = null;
+                    noResultsLabel.Visibility = Visibility.Visible;
+                }
+            }
+            catch (ApiValidationException exception)
+            {
+                ShowError(exception.Message);
+            }
+            catch (RateLimitExceededException exception)
+            {
+                ShowError(exception.Message);
+            }
+            catch (System.Net.Http.HttpRequestException)
+            {
+                ShowError("An error occurred while trying to send the request. Please check your internet connection.");
+            }
+            catch (AuthorizationException)
+            {
+                ShowError("Authentication failed: bad credentials");
+                // Reset the token so next search will re-authenticate
+                _lastUsedToken = null;
+            }
+            catch (AbuseException exception)
+            {
+                ShowError($"You have triggered an abuse detection mechanism. Try again after {exception.RetryAfterSeconds} seconds.");
+            }
+        }
+
+
+        private void ShowError(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+
+        private bool IsFormValid()
+        {
+            return !Validation.GetHasError(termTextBox)
+                && !Validation.GetHasError(ownerTextBox)
+                && !Validation.GetHasError(pathTextBox)
+                && !Validation.GetHasError(fileNameTextBox)
+                && !Validation.GetHasError(sizeTextBox)
+                && !Validation.GetHasError(extensionTextBox)
+                && !Validation.GetHasError(accessTokenTextBox);
         }
 
 
         private async void showCommitsOnClick(object sender, RoutedEventArgs e)
         {
-
-            commitWindow = new CommitWindow();
+            _commitWindow = new CommitWindow(_clientService);
             var selectedFile = (Model.File)filesDataGrid.CurrentCell.Item;
-            List<Model.Commit> commitList = await codeSearch.getCommitsForFIle(selectedFile.Owner, selectedFile.RepoName, selectedFile.Path);
+
+            List<Model.Commit> commitList = await _codeSearchManager.GetCommitsForFileAsync(
+                selectedFile.Owner,
+                selectedFile.RepoName,
+                selectedFile.Path
+            );
 
             this.Dispatcher.Invoke(() =>
             {
-                commitWindow.commitsDataGrid.ItemsSource = commitList;
-                commitWindow.Show();
+                _commitWindow.commitsDataGrid.ItemsSource = commitList;
+                _commitWindow.Show();
             });
         }
 
 
-        private  void downloadResultsButtonClick(object sender, RoutedEventArgs e)
+        private void downloadResultsButtonClick(object sender, RoutedEventArgs e)
         {
-            downloadResultsWindow = new DownloadResultsWindow(requestParameters, filesDataGrid.Items);
-            downloadResultsWindow.Show();           
+            _downloadResultsWindow = new DownloadResultsWindow(_requestParameters, filesDataGrid.Items, _clientService);
+            _downloadResultsWindow.Show();
         }
-
 
 
         private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)
         {
-
             var currentCell = e.ClipboardRowContent[filesDataGrid.CurrentCell.Column.DisplayIndex];
             e.ClipboardRowContent.Clear();
             e.ClipboardRowContent.Add(currentCell);
-
         }
 
 

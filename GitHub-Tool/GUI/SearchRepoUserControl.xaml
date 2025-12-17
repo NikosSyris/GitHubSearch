@@ -11,7 +11,7 @@
     <StackPanel>
         <WrapPanel Margin="10">
             <Label  Content="Access Token"/>
-            <TextBox Name="accessTokenTextBox"  MinWidth="270"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="accessTokenTextBox"  MinWidth="270" Margin="58,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="AccessToken">
                         <Binding.ValidationRules>
@@ -23,7 +23,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Search term"/>
-            <TextBox Name="termTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="termTextBox"  MinWidth="80"  Margin="65,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Term">
                         <Binding.ValidationRules>
@@ -38,7 +38,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Owner name"/>
-            <TextBox Name="ownerTextBox"  MinWidth="80"  Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
+            <TextBox Name="ownerTextBox"  MinWidth="80" Margin="60,0,0,0" Validation.ErrorTemplate="{StaticResource validationErrorTemplate}">
                 <TextBox.Text>
                     <Binding Path="Owner">
                         <Binding.ValidationRules>
@@ -50,7 +50,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Stars"/>
-            <ComboBox Name="starsComboBox" Margin="5,0,0,0">
+            <ComboBox Name="starsComboBox" Margin="100,0,0,0">
                 <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
                 <ComboBoxItem>Less than</ComboBoxItem>
             </ComboBox>
@@ -66,7 +66,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Forks"/>
-            <ComboBox Name="forksComboBox" Margin="5,0,0,0">
+            <ComboBox Name="forksComboBox" Margin="100,0,0,0">
                 <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
                 <ComboBoxItem>Less than</ComboBoxItem>
             </ComboBox>
@@ -82,7 +82,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Size(KB)"/>
-            <ComboBox Name="sizeComboBox" Margin="5,0,0,0">
+            <ComboBox Name="sizeComboBox" Margin="85,0,0,0">
                 <ComboBoxItem IsSelected="True">More than</ComboBoxItem>
                 <ComboBoxItem>Less than</ComboBoxItem>
             </ComboBox>
@@ -98,7 +98,7 @@
         </WrapPanel>
         <WrapPanel Margin="10">
             <Label  Content="Sort by"/>
-            <ComboBox Name="sortComboBox">
+            <ComboBox Name="sortComboBox" Margin="90,0,0,0">
                 <ComboBoxItem>Stars</ComboBoxItem>
                 <ComboBoxItem>Forks</ComboBoxItem>
                 <ComboBoxItem>Updated</ComboBoxItem>

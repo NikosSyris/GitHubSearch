@@ -1,26 +1,26 @@
 ﻿using GitHubSearch.Action;
 using GitHubSearch.Model;
+using GitHubSearch.Services;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace GitHubSearch.GUI
 {
-
     public partial class DownloadResultsWindow : Window
     {
-        DownloadLocallyManager download;
-        RequestParameters requestParameters;
-        ItemCollection files;
+        private DownloadLocallyManager _downloadManager;
+        private RequestParameters _requestParameters;
+        private ItemCollection _files;
 
-        public DownloadResultsWindow(RequestParameters requestParameters, ItemCollection files)
+        public DownloadResultsWindow(RequestParameters requestParameters, ItemCollection files, GitHubClientService clientService)
         {
             InitializeComponent();
-            download = new DownloadLocallyManager();
-            downloadDestinationTextBox.Text = download.DefaultDownloadDestination;
-            fileNameTextBox.Text = download.DefaultName;
-            this.requestParameters = requestParameters;
-            this.files = files;
+            _downloadManager = new DownloadLocallyManager(clientService);
+            downloadDestinationTextBox.Text = _downloadManager.DefaultDownloadDestination;
+            fileNameTextBox.Text = _downloadManager.DefaultName;
+            _requestParameters = requestParameters;
+            _files = files;
         }
 
         private void downloadButtonClick(object sender, RoutedEventArgs e)
@@ -30,7 +30,7 @@ namespace GitHubSearch.GUI
 
             try
             {
-                download.downloadAllSearchResults(requestParameters, files, downloadDestinationTextBox.Text, fileNameTextBox.Text);
+                _downloadManager.DownloadAllSearchResults(_requestParameters, _files, downloadDestinationTextBox.Text, fileNameTextBox.Text);
                 downloadTextBlock.Visibility = Visibility.Visible;
             }
             catch (Exception exception)

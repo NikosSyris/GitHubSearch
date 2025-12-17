@@ -1,71 +1,73 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using GitHubSearch.Model;
 using GitHubSearch.Action;
+using GitHubSearch.Services;
 using System.Collections.Generic;
 
 namespace GitHubSearch.GUI
 {
-
     public partial class CommitWindow : Window
     {
+        private DownloadLocallyManager _downloadManager;
 
-        DownloadLocallyManager download;
-
-        public CommitWindow()
+        public CommitWindow(GitHubClientService clientService)
         {
             InitializeComponent();
-            download = new DownloadLocallyManager();
-            downloadDestinationTextBox.Text = download.DefaultDownloadDestination;
+            _downloadManager = new DownloadLocallyManager(clientService);
+            downloadDestinationTextBox.Text = _downloadManager.DefaultDownloadDestination;
         }
-
 
         private void checkAllCommits(object sender, RoutedEventArgs e)
         {
-            checkOrUncheck(true);
+            CheckOrUncheck(true);
         }
 
         private void uncheckAllCommits(object sender, RoutedEventArgs e)
         {
-            checkOrUncheck(false);
+            CheckOrUncheck(false);
         }
 
-
-        private void checkOrUncheck(bool value)
+        private void CheckOrUncheck(bool value)
         {
-            IEnumerable<Commit> commitList = commitsDataGrid.ItemsSource as IEnumerable<Model.Commit>;
+            IEnumerable<Commit> commitList = commitsDataGrid.ItemsSource as IEnumerable<Commit>;
             if (commitList != null)
             {
                 foreach (var commit in commitList)
                 {
                     commit.IsSelected = value;
                 }
-
             }
             commitsDataGrid.Items.Refresh();
         }
 
-
-
-        private void downloadButtonClick(object sender, RoutedEventArgs e)    
+        private async void downloadButtonClick(object sender, RoutedEventArgs e)
         {
             downloadTextBlock.Visibility = Visibility.Hidden;
             downloadButton.IsEnabled = false;
 
-            if (download.directoryExists(downloadDestinationTextBox.Text))
+            if (_downloadManager.DirectoryExists(downloadDestinationTextBox.Text))
             {
-                download.downloadFIleContent(commitsDataGrid.ItemsSource, downloadDestinationTextBox.Text);
-                downloadTextBlock.Visibility = Visibility.Visible;
+                try
+                {
+                    await _downloadManager.DownloadFileContentAsync(commitsDataGrid.ItemsSource, downloadDestinationTextBox.Text);
+                    downloadTextBlock.Visibility = Visibility.Visible;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error downloading files: " + ex.Message,
+                                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             else
             {
                 MessageBox.Show("The directory doesn't exist or you don't have the right to access it",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            
+
             downloadButton.IsEnabled = true;
         }
-
 
         private void enableDataGridCopying(object sender, DataGridRowClipboardEventArgs e)
         {
