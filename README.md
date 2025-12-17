@@ -59,21 +59,31 @@ Browse repository structure with direct links to every file
 
 ### Show the commits and download all of them or just a subset
 
+
 <img width="777" height="300" alt="image" src="https://github.com/user-attachments/assets/168544a7-c437-424d-8e9d-7946bd025c75" />
+
 
 <img width="781" height="170" alt="image" src="https://github.com/user-attachments/assets/23bba36d-a5a5-4e78-acf7-29d57e9588b1" />
 
+
 ### Repository Search Results
 
-<img width="1894" height="822" alt="image" src="https://github.com/user-attachments/assets/39b77791-13cd-4014-aa23-d45303b15b65" />
+
+<img width="1894" height="822" alt="image" src="https://github.com/user-attachments/assets/91d8bc8b-c9c8-41eb-8141-0ad654bc305e" />
+
 
 ### Get the repositories structure and a table containing all the projects' files
 
-<img width="1710" height="1016" alt="image" src="https://github.com/user-attachments/assets/e0198069-70aa-45f3-aa1d-6f030b35aa3b" />
+
+<img width="1710" height="1016" alt="image" src="https://github.com/user-attachments/assets/ddced939-2b09-4cc0-8a8b-59c3968611bb" />
+
 
 ### Commit History View
 
-<img width="782" height="304" alt="image" src="https://github.com/user-attachments/assets/f6838977-5051-451d-95d1-365d21652d25" />
+
+<img width="782" height="304" alt="image" src="https://github.com/user-attachments/assets/a41a61f7-fee7-4ee0-acbf-a57c38a87318" />
+
+
 
 ## Prerequisites
 
